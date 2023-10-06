@@ -1,0 +1,4 @@
+{
+  "*.{js,jsx,ts,tsx}": ["npx next lint --fix --max-warnings=0"],
+  "*.{js,jsx,ts,tsx,css,svg,json,md}": ["npx prettier --write"]
+}
