@@ -11,6 +11,7 @@
     "prepare": "husky install"
   },
   "dependencies": {
+    "@prisma/client": "^5.4.2",
     "eslint": "^8.50.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-prettier": "^5.0.0",
@@ -26,8 +27,9 @@
     "@commitlint/config-conventional": "^17.7.0",
     "autoprefixer": "latest",
     "eslint-plugin-react": "^7.33.2",
+    "husky": "^8.0.0",
     "postcss": "latest",
-    "tailwindcss": "latest",
-    "husky": "^8.0.0"
+    "prisma": "^5.4.2",
+    "tailwindcss": "latest"
   }
 }
