@@ -6,8 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint .",
     "lint-staged": "lint-staged",
+    "lint": "next lint",
     "prepare": "husky install"
   },
   "dependencies": {
@@ -26,6 +26,7 @@
     "@commitlint/cli": "^17.7.2",
     "@commitlint/config-conventional": "^17.7.0",
     "autoprefixer": "latest",
+    "eslint-config-next": "^13.5.5",
     "eslint-plugin-react": "^7.33.2",
     "husky": "^8.0.0",
     "postcss": "latest",
