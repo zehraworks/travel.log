@@ -12,31 +12,29 @@ datasource db {
 
 model User {
   id             String           @id @default(auto()) @map("_id") @db.ObjectId
-  createdAt      DateTime         @default(now())
-  updatedAt      DateTime         @updatedAt
-  email          String           @unique
-  name           String
+  email          String           @unique @regexp(/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}$/)
   hashedPassword String?
+  name           String
   bio            String?
   profilePhoto   String?
   posts          Post[]
   PinnedLocation PinnedLocation[]
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
 }
 
 model Post {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
   title     String
   published Boolean  @default(false)
   author    User     @relation(fields: [authorId], references: [id])
   authorId  String   @db.ObjectId
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model PinnedLocation {
   id        String    @id @default(auto()) @map("_id") @db.ObjectId
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
   name      String
   desc      String?
   latitude  Float
@@ -45,6 +43,8 @@ model PinnedLocation {
   continent Continent
   user      User      @relation(fields: [userId], references: [id])
   userId    String    @unique @db.ObjectId
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 }
 
 enum Status {
