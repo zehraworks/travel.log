@@ -2,7 +2,7 @@ export default function Home() {
   return <main >
   <div className="relative bg-world bg-cover w-screen h-screen">
     <div className="absolute font-normal bottom-40 left-20 text-4xl tracking-wider text-white">
-      <p className=""><span class="text-white border-b-8 border-yellow-500">Travelog:</span> Because Every <br></br> </p>
+      <p className=""><span className="text-white border-b-8 border-yellow-500">Travelog:</span> Because Every <br></br> </p>
        <p className="leading-8 mt-8">Adventure Deserves a Story. </p>
        </div>
   </div>
@@ -24,7 +24,7 @@ export default function Home() {
             </div>
             <div className="w-1/2 pb-5 ">
             <p className="text-lg font-semibold pb-5"> Interactive Map </p>
-            <p className="text-text-color"> Pin your favorite places, add notes, and create a personalized map showcasing all the destinations you've explored. </p>
+            <p className="text-text-color"> Pin your favorite places, add notes, and create a personalized map showcasing all the destinations you have explored. </p>
             </div>
         </div>
         <div className=" w-80vw flex justify-between  gap-x-24">
@@ -45,22 +45,23 @@ export default function Home() {
   <div className="w-1/2 pl-10 ">
     <div className="pt-28 pb-10">
       <p className="text-lg font-semibold pb-8">Photo Attachments to Places </p>  
-      <p className="w-4/5 tracking-wider font-normal whitespace-normal pb-6">Seamlessly connect your travel photos to specific locations on the map. Attach your photos to places you've been, making it easy to revisit and reminisce about your adventures.</p>
+      <p className="w-4/5 tracking-wider font-normal whitespace-normal pb-6">Seamlessly connect your travel photos to specific locations on the map. 
+      Attach your photos to places you have been, making it easy to revisit and reminisce about your adventures.</p>
     </div>
 
-    <div class="space-y-10 pl-8">
-      <div class="flex items-center">
-        <div class="w-8 h-8 rounded-full bg-orange-500 mr-2"></div>
+    <div className="space-y-10 pl-8">
+      <div className="flex items-center">
+        <div className="w-8 h-8 rounded-full bg-orange-500 mr-2"></div>
         <p className="pl-4">Add your own notes and descriptions to each saved location.</p>
       </div>
 
-      <div class="flex items-center">
-        <div class="w-8 h-8  rounded-full bg-orange-500 mr-2"></div>
+      <div className="flex items-center">
+        <div className="w-8 h-8  rounded-full bg-orange-500 mr-2"></div>
         <p className="pl-4">Document your experiences, write down recommendations.</p>
       </div>
 
-      <div class="flex items-center">
-        <div class="w-8 h-8  rounded-full bg-orange-500 mr-2"></div>
+      <div className="flex items-center">
+        <div className="w-8 h-8  rounded-full bg-orange-500 mr-2"></div>
         <p className="pl-4">Include personal anecdotes to make your travel memories richer.</p>
       </div>
     </div>
@@ -92,19 +93,20 @@ export default function Home() {
         <div className="w-full h-64 bg-world bg-cover bg-center" ></div>
         <div className="h-60 flex-col p-4 items-center">
           <p className="text-lg font-semibold px-8 py-6">Geotagged Photos</p>
-          <p className="text-text-color px-8 py-4">Automatically geotag your photos with the exact location where they were taken. It's the perfect way to associate your pictures with specific places on your map.</p>
+          <p className="text-text-color px-8 py-4">Automatically geotag your photos with the exact location where they were taken.
+           It is the perfect way to associate your pictures with specific places on your map.</p>
         </div>
       </div>
 </div>
 
-<div class="border-y-2 items-center border-black w-full py-20 pl-10 flex justify-between">
+<div className="border-y-2 items-center border-black w-full py-20 pl-10 flex justify-between">
 <div className="text-logo-color text-4xl font-extrabold items-center">Travelog</div>
 <div className="flex gap-20 pl-10 pr-10">
   <div>
     <p className="font-bold text-xl tracking-wider text-logo-color pb-6">About Us
 
 </p>
-    <p className="w-[15rem]"> Learn more about our app's mission, values, and the team behind it. </p>
+    <p className="w-[15rem]"> Learn more about our app s mission, values, and the team behind it. </p>
   </div>
   <div>
     <p className="font-bold text-xl tracking-wider text-logo-color pb-6">Careers</p>
