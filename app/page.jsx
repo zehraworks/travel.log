@@ -104,7 +104,7 @@ export default function Home() {
     <div className="flex gap-20 pl-10 pr-10">
       <div>
         <p className="font-bold text-xl tracking-wider text-logo-color pb-6">About Us </p>
-        <p className="w-[15rem]"> Learn more about our app s mission, values, and the team behind it. </p>
+        <p className="w-[15rem]"> Learn more about our app&apos;s mission, values, and the team behind it. </p>
       </div>
       <div>
         <p className="font-bold text-xl tracking-wider text-logo-color pb-6">Careers</p>
