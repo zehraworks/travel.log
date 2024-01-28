@@ -17,16 +17,16 @@
     "eslint-plugin-prettier": "^5.0.0",
     "husky": "^8.0.3",
     "lint-staged": "^14.0.1",
-    "next": "^13.5.4",
+    "next": "^14.1.0",
     "prettier": "^3.0.3",
-    "react": "latest",
-    "react-dom": "latest"
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   },
   "devDependencies": {
     "@commitlint/cli": "^17.7.2",
     "@commitlint/config-conventional": "^17.7.0",
     "autoprefixer": "latest",
-    "eslint-config-next": "^13.5.5",
+    "eslint-config-next": "^14.1.0",
     "eslint-plugin-react": "^7.33.2",
     "husky": "^8.0.0",
     "postcss": "latest",
