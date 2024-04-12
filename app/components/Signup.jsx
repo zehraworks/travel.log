@@ -1,18 +1,43 @@
-"use client";
+'use client';
 
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
+import { useRouter } from 'next/navigation'
+
 export default function Signup() {
+  const router = useRouter();
+  const [name, setName]=useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [passwordConfirm, setPasswordConfirm] = useState("");
+  const [notification, setNotification] = useState(null);
 
   const signupUser = async (e) => {
     e.preventDefault();
-    fetch("http://localhost:3000/api/signup", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
-    });
+
+    try {
+      const response = await fetch("http://localhost:3000/api/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, password, passwordConfirm }),
+      });
+
+      if(response.redirected){
+        router.push(response.url);
+      if (response.ok) {
+        // Handle success, e.g., show a success notification
+        const data = await response.json();
+        setNotification(data.message);
+
+      } else {
+        // Handle errors from the server
+        const data = await response.json();
+        setNotification(data.error || "An error occurred.");
+      }}
+    } catch (error) {
+      console.error("Error creating user:", error);
+      setNotification("An unexpected error occurred.");
+    }
   };
 
   return (
@@ -32,6 +57,23 @@ export default function Signup() {
 
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
           <form className="space-y-6" onSubmit={signupUser}>
+
+          <div>
+              <div className="mt-2">
+                <Input
+                  id="name"
+                  name="name"
+                  type="text"
+                  autoComplete="name"
+                  required
+                  placeholder="Full Name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                />
+              </div>
+            </div>
+
             <div>
               <div className="mt-2">
                 <Input
@@ -64,6 +106,28 @@ export default function Signup() {
               </div>
             </div>
 
+            <div>
+              <div className="mt-2">
+                <Input
+                  id="passwordConfirm"
+                  name="passwordConfirm"
+                  type="password"
+                  autoComplete="current-password"
+                  required
+                  placeholder="Confirm Password"
+                  value={passwordConfirm}
+                  onChange={(e) => setPasswordConfirm(e.target.value)}
+                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                />
+              </div>
+            </div>
+
+            {notification && (
+        <div className={`notification ${notification.includes("error") ? "error" : "success"}`}>
+          {notification}
+        </div>
+      )}
+            
             <div>
               <button
                 type="submit"
