@@ -15,6 +15,12 @@ export default async function RootLayout({ children }) {
   const session = await getServerSession();
   return (
     <html lang="en">
+      <head>
+        <script
+          deferYOUR_A
+          src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=places`}
+        ></script>
+      </head>
       <body className={raleway.className}>
         <SessionProvider session={session}>
           <NavMenu />

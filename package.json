@@ -29,9 +29,11 @@
     "next-auth": "^4.24.5",
     "prettier": "^3.0.3",
     "react": "^18.2.0",
+    "react-cool-onclickoutside": "^1.7.0",
     "react-dom": "^18.2.0",
     "tailwind-merge": "^2.2.2",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "use-places-autocomplete": "^4.0.1"
   },
   "devDependencies": {
     "@commitlint/cli": "^17.7.2",
