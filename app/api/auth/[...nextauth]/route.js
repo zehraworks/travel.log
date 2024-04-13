@@ -3,7 +3,6 @@ import GithubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@auth/prisma-adapter";
-//import { prisma } from "@/prisma/index"; ??
 import bcrypt from "bcrypt";
 import { PrismaClient } from "@prisma/client";
 
@@ -62,7 +61,6 @@ export const authOptions = {
     }),
   ],
   session: {
-    // Set to jwt in order to CredentialsProvider works properly
     strategy: "jwt",
   },
   secret: process.env.NEXTAUTH_SECRET,
@@ -72,4 +70,3 @@ export const handler = NextAuth(authOptions);
 
 export { handler as GET, handler as POST };
 
-// export default NextAuth(authOptions)
