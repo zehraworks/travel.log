@@ -5,14 +5,16 @@ import { Input } from "@/components/ui/input";
 import { useRouter } from 'next/navigation';
 import { signUpInputValidation } from "@/helpers/inputValidation";
 import * as z from 'zod';
+import { FcGoogle } from "react-icons/fc";
+import { FaGithub } from "react-icons/fa";
+import { signIn } from "next-auth/react";
 
 export default function Signup() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
-  const [errors, setErrors] = useState({
-}); 
+  const [errors, setErrors] = useState({});
 
   const validateInputs = async () => {
     try {
@@ -42,12 +44,17 @@ export default function Signup() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password, passwordConfirm }),
     });
-  
+
     const data = await response.json();
-    if (!data.error) {
+    if (!data.errors) {
       router.push("/");
+    } else {
+      setErrors({ email: data.errors, password: data.errors }); // handle error from server
     }
-};
+  };
+
+
+
   return (
     <>
       <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
@@ -63,9 +70,8 @@ export default function Signup() {
           </h2>
         </div>
 
-        <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+        <div className="mt-2 sm:mx-auto sm:w-full sm:max-w-sm">
           <form className="space-y-6" onSubmit={signupUser}>
-
 
             <div>
               <div className="mt-2">
@@ -74,7 +80,6 @@ export default function Signup() {
                   name="email"
                   type="email"
                   autoComplete="email"
-                  required
                   placeholder="Email Address"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -91,7 +96,6 @@ export default function Signup() {
                   name="password"
                   type="password"
                   autoComplete="current-password"
-                  required
                   placeholder="Password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
@@ -108,16 +112,15 @@ export default function Signup() {
                   name="passwordConfirm"
                   type="password"
                   autoComplete="current-password"
-                  required
                   placeholder="Confirm Password"
                   value={passwordConfirm}
                   onChange={(e) => setPasswordConfirm(e.target.value)}
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
-              {errors.passwordConfirm && <p className="text-red-500 text-xs mt-1">{errors.passwordConfirm}</p>}
-               </div>
+                {errors.passwordConfirm && <p className="text-red-500 text-xs mt-1">{errors.passwordConfirm}</p>}
+              </div>
             </div>
-            
+
             <div>
               <button
                 type="submit"
@@ -126,6 +129,35 @@ export default function Signup() {
                 Sign up
               </button>
             </div>
+
+            <div className="relative css-1l8wmix e5i1odf1">
+              <div className="flex items-center">
+                <hr className="flex-grow border-t border-gray-200" />
+                <span className="px-6 text-gray-500 font-semibold">or</span>
+                <hr className="flex-grow border-t border-gray-200" />
+              </div>
+            </div>
+
+            <div className="mt-2 space-y-2">
+              <button
+                onClick={() => signIn('google')}
+                className="flex items-center justify-center w-full rounded-md border-0 py-1.5 text-gray-500 shadow-sm hover:bg-gray-200 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              >
+                <FcGoogle className="mr-2" style={{ fontSize: '1.5em' }} />
+                {"Continue with Google"}
+              </button>
+            </div>
+
+            <div className="mt-2 space-y-2">
+              <button
+                onClick={() => signIn('github')}
+                className="flex items-center justify-center w-full rounded-md border-0 py-1.5 text-gray-500 shadow-sm hover:bg-gray-200 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              >
+                <FaGithub className="mr-2" style={{ fontSize: '1.5em' }} />
+                {"Continue with Github"}
+              </button>
+            </div>
+
           </form>
 
           <p className="mt-10 text-center text-sm text-gray-500">
