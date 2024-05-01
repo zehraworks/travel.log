@@ -47,14 +47,21 @@ export default function Signup() {
 
     const data = await response.json();
     if (!data.errors) {
+      
       router.push("/");
     } else {
       setErrors({ email: data.errors, password: data.errors }); // handle error from server
     }
   };
 
+  const handleGoogleSignIn = async () => {
+    await signIn('google', { callbackUrl: '/' }); // Redirect to home page after successful sign-in with Google
+  };
 
-
+  const handleGitHubSignIn = async () => {
+    await signIn('github', { callbackUrl: '/' }); // Redirect to home page after successful sign-in with GitHub
+  };
+  
   return (
     <>
       <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
@@ -140,7 +147,7 @@ export default function Signup() {
 
             <div className="mt-2 space-y-2">
               <button
-                onClick={() => signIn('google')}
+                onClick={handleGoogleSignIn}
                 className="flex items-center justify-center w-full rounded-md border-0 py-1.5 text-gray-500 shadow-sm hover:bg-gray-200 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               >
                 <FcGoogle className="mr-2" style={{ fontSize: '1.5em' }} />
@@ -150,7 +157,7 @@ export default function Signup() {
 
             <div className="mt-2 space-y-2">
               <button
-                onClick={() => signIn('github')}
+                onClick={handleGitHubSignIn}
                 className="flex items-center justify-center w-full rounded-md border-0 py-1.5 text-gray-500 shadow-sm hover:bg-gray-200 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               >
                 <FaGithub className="mr-2" style={{ fontSize: '1.5em' }} />

@@ -1,10 +1,12 @@
 import { PrismaClient } from "@prisma/client";
 import { NextResponse } from "next/server";
 import bcrypt from "bcrypt";
+import { setTokenCookie } from "@/helpers/setTokenCookie";
+
 
 const prisma = new PrismaClient();
 
-export async function POST(request) {
+export async function POST(request, response) {
   try {
     const { email, password} = await request.json();
 
@@ -31,7 +33,12 @@ export async function POST(request) {
         name:extractedName
       }
     });
+
+    console.log(newUser.id)
     
+    // Set token as cookie
+    setTokenCookie(newUser.id, response);
+
     return NextResponse.json({success:true, message: "User created successfully",newUser}, {status:200});
 
   } catch (error) {
