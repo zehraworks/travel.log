@@ -1,7 +1,7 @@
 import "./globals.css";
 import { Raleway } from "next/font/google";
 import { getServerSession } from "next-auth";
-import SessionProvider from "./components/SessionProvier";
+import SessionProvider from "./components/SessionProvider";
 import NavMenu from "./components/NavMenu";
 
 const raleway = Raleway({ subsets: ["latin"] });

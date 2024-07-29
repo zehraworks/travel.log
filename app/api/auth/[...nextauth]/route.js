@@ -64,9 +64,11 @@ export const authOptions = {
     strategy: "jwt",
   },
   secret: process.env.NEXTAUTH_SECRET,
+  pages: {
+    signIn: "/signin",
+  },
 };
 
 export const handler = NextAuth(authOptions);
 
 export { handler as GET, handler as POST };
-

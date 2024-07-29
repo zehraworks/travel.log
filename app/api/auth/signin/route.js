@@ -6,7 +6,6 @@ import bcrypt from "bcrypt";
 export const POST = async (req) => {
   try {
     const { name, email, password } = await req.json();
-
     if (!name || !email || !password)
       return NextResponse.json({ message: "Invalid data" }, { status: 422 });
 
