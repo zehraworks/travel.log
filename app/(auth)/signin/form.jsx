@@ -43,17 +43,22 @@ export default function SignInForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="space-y-4 w-full text-primary-foreground"
+      >
         <FormField
           control={form.control}
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Email</FormLabel>
               <FormControl>
-                <Input placeholder="email" {...field} />
+                <Input
+                  className="bg-transparent border-primary-foreground rounded-sm"
+                  placeholder="Email address"
+                  {...field}
+                />
               </FormControl>
-              <FormDescription>This is your email address</FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -63,16 +68,21 @@ export default function SignInForm() {
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Password</FormLabel>
               <FormControl>
-                <Input type="password" placeholder="password" {...field} />
+                <Input
+                  className="bg-transparent border-primary-foreground rounded-sm"
+                  type="password"
+                  placeholder="Password"
+                  {...field}
+                />
               </FormControl>
-              <FormDescription>This is your password</FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
-        <Button type="submit">Submit</Button>
+        <Button type="submit" variant="accent">
+          Signin
+        </Button>
       </form>
     </Form>
   );

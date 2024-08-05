@@ -1,15 +1,17 @@
 "use client";
-import { signIn } from "next-auth/react";
 
-export default function GithubSignInButton() {
+import { signIn } from "next-auth/react";
+import { Button } from "@/components/ui/button";
+import { BsGithub } from "react-icons/bs";
+
+export default function GoogleSignInButton() {
   return (
-    <div>
-      <button
-        className="bg-white border border-zinc-300 py-1 rounded-md w-full text-zinc-700"
-        onClick={() => signIn("github")}
-      >
-        <span className="text-red-700 mr-2">G</span> Sign in with Github
-      </button>
-    </div>
+    <Button
+      className="w-full flex bg-transparent text-primary-foreground rounded-sm border-[1px]  border-primary-foreground "
+      onClick={() => signIn("github", { callbackUrl: "/" })}
+    >
+      <BsGithub className="h-5 w-5 mr-4 text-primary-foreground" />
+      <p>Continue with Github</p>
+    </Button>
   );
 }

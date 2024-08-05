@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import logo from "../../public/logo.svg";
-import { useSession, signIn, signOut } from "next-auth/react";
+import { useSession, signOut } from "next-auth/react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -56,8 +56,8 @@ function AuthButton() {
 export default function NavMenu() {
   const pathName = usePathname();
   return (
-    <div className="flex w-full h-48 justify-center bg-primary-light text-black dark:bg-primary-dark dark:text-white py-5">
-      <div className="container flex flex-row justify-between items-center text-2xl font-medium">
+    <div className="bg-background text-foreground flex w-full h-48 justify-center py-5">
+      <div className=" container flex flex-row justify-between items-center text-2xl font-medium">
         <div>
           <Image alt="logo" className="invert dark:invert-0" src={logo} />
         </div>

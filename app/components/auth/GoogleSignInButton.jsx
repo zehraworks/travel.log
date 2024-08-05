@@ -1,14 +1,17 @@
 "use client";
 
 import { signIn } from "next-auth/react";
+import { Button } from "@/components/ui/button";
+import { BsGoogle } from "react-icons/bs";
 
 export default function GoogleSignInButton() {
   return (
-    <button
-      className="bg-white border border-zinc-300 py-1 rounded-md w-full text-zinc-700"
+    <Button
+      className="w-full flex bg-transparent text-primary-foreground rounded-sm border-[1px]  border-primary-foreground "
       onClick={() => signIn("google", { callbackUrl: "/" })}
     >
-      <span className="text-red-700 mr-2">G</span> Sign in with Google
-    </button>
+      <BsGoogle className="h-5 w-5 mr-3 text-primary-foreground" />
+      <p>Continue with Google</p>
+    </Button>
   );
 }
