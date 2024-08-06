@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import logo from "../../public/logo.svg";
-import { useSession, signIn, signOut } from "next-auth/react";
+import { useSession, signOut } from "next-auth/react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,22 +10,31 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { usePathname } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 function AuthButton() {
   const { data: session } = useSession();
+
+  const router = useRouter();
+
+  const handleRedirect = () => {
+    router.push("/signin");
+  };
 
   if (session) {
     return (
       <DropdownMenu>
         <DropdownMenuTrigger className="text-lg font-semibol text-slate-600 cursor-pointer sm:text-sm hover:text-slate-800 flex items-center dark:text-gray-300 dark:hover:text-gray-400">
-          {/*        <Image
+          {session?.user?.image && (
+            <Image
               src={session?.user?.image}
               alt={session?.user?.name}
               width={40}
               height={40}
               className="rounded-full mr-2"
             />
- */}
+          )}
           <h1 className="text-2xl">{session.user?.name}</h1>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
@@ -41,21 +50,22 @@ function AuthButton() {
       </DropdownMenu>
     );
   }
-  return <button onClick={() => signIn()}>Sign in</button>;
+  return <button onClick={handleRedirect}>SignIn</button>;
 }
 
 export default function NavMenu() {
+  const pathName = usePathname();
   return (
-    <div className="flex w-full justify-center bg-primary-light text-black dark:bg-primary-dark dark:text-white py-5">
-      <div className="container flex flex-row justify-between items-center text-2xl font-medium">
+    <div className="bg-background text-foreground flex w-full h-[140px] justify-center py-5">
+      <div className=" container flex flex-row justify-between items-center text-2xl font-medium">
         <div>
-          <Image className="invert dark:invert-0" src={logo} />
+          <Image alt="logo" className="h-20 invert dark:invert-0" src={logo} />
         </div>
-        <div className="flex space-x-24 mt-10">
+        <div className="flex text-xl space-x-24 mt-10">
           <h1>HOME</h1>
           <h1>ABOUT US</h1>
           <h1>BLOG</h1>
-          <AuthButton />
+          {pathName !== "/register" && <AuthButton />}
         </div>
       </div>
     </div>
