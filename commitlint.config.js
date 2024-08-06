@@ -32,6 +32,7 @@ module.exports = {
         "style",
         "test",
         "security",
+        "chore",
       ],
     ],
   },
