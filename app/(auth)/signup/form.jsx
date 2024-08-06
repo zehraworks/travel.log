@@ -9,10 +9,8 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -95,17 +93,18 @@ export default function SignUpForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="space-y-3 w-full text-primary-foreground"
+      >
         <FormField
           control={form.control}
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Name</FormLabel>
               <FormControl>
-                <Input placeholder="name" {...field} />
+                <Input variant="transparent" placeholder="name" {...field} />
               </FormControl>
-              <FormDescription>This is your username</FormDescription>
               <FormMessage />
               {nameError && <div className="text-red-500">{nameError}</div>}
             </FormItem>
@@ -116,11 +115,9 @@ export default function SignUpForm() {
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Email</FormLabel>
               <FormControl>
-                <Input placeholder="email" {...field} />
+                <Input variant="transparent" placeholder="email" {...field} />
               </FormControl>
-              <FormDescription>This is your email address</FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -130,11 +127,14 @@ export default function SignUpForm() {
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Password</FormLabel>
               <FormControl>
-                <Input type="password" placeholder="password" {...field} />
+                <Input
+                  variant="transparent"
+                  type="password"
+                  placeholder="password"
+                  {...field}
+                />
               </FormControl>
-              <FormDescription>This is your password</FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -144,16 +144,21 @@ export default function SignUpForm() {
           name="passwordMatch"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Password Match</FormLabel>
               <FormControl>
-                <Input type="password" placeholder="passwordMatch" {...field} />
+                <Input
+                  variant="transparent"
+                  type="password"
+                  placeholder="passwordMatch"
+                  {...field}
+                />
               </FormControl>
-              <FormDescription>This is your password match</FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
-        <Button type="submit">Submit</Button>
+        <Button type="submit" variant="accent">
+          Submit
+        </Button>
       </form>
     </Form>
   );

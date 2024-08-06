@@ -17,7 +17,10 @@ import {
 import { Input } from "@/components/ui/input";
 
 const formSchema = z.object({
-  email: z.string().min(2, { message: "Email must be at least 2 characters" }),
+  email: z
+    .string()
+    .email()
+    .min(2, { message: "Email must be at least 2 characters" }),
   password: z
     .string()
     .min(6, { message: "Password must be at least 6 character" })
@@ -33,7 +36,6 @@ export default function SignInForm() {
     },
   });
   function onSubmit(values) {
-    console.log("valll", values);
     signIn("credentials", {
       callbackUrl: "/",
       email: values.email,
@@ -54,7 +56,7 @@ export default function SignInForm() {
             <FormItem>
               <FormControl>
                 <Input
-                  className="bg-transparent border-primary-foreground rounded-sm"
+                  variant="transparent"
                   placeholder="Email address"
                   {...field}
                 />
@@ -70,7 +72,7 @@ export default function SignInForm() {
             <FormItem>
               <FormControl>
                 <Input
-                  className="bg-transparent border-primary-foreground rounded-sm"
+                  variant="transparent"
                   type="password"
                   placeholder="Password"
                   {...field}

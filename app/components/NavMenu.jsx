@@ -56,12 +56,12 @@ function AuthButton() {
 export default function NavMenu() {
   const pathName = usePathname();
   return (
-    <div className="bg-background text-foreground flex w-full h-48 justify-center py-5">
+    <div className="bg-background text-foreground flex w-full h-[140px] justify-center py-5">
       <div className=" container flex flex-row justify-between items-center text-2xl font-medium">
         <div>
-          <Image alt="logo" className="invert dark:invert-0" src={logo} />
+          <Image alt="logo" className="h-20 invert dark:invert-0" src={logo} />
         </div>
-        <div className="flex space-x-24 mt-10">
+        <div className="flex text-xl space-x-24 mt-10">
           <h1>HOME</h1>
           <h1>ABOUT US</h1>
           <h1>BLOG</h1>
