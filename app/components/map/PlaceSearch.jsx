@@ -1,12 +1,17 @@
 "use client";
 import usePlacesAutocomplete, {
+  getDetails,
   getGeocode,
   getLatLng,
 } from "use-places-autocomplete";
 import useOnclickOutside from "react-cool-onclickoutside";
-import { useEffect } from "react";
+import { Input } from "@/components/ui/input";
 
-export default function PlaceSearch({ placeCoordinates, setPlaceCoordinates }) {
+export default function PlaceSearch({
+  placeCoordinates,
+  setPlaceCoordinates,
+  setPlace,
+}) {
   const {
     ready,
     value,
@@ -25,8 +30,18 @@ export default function PlaceSearch({ placeCoordinates, setPlaceCoordinates }) {
   };
 
   const handleSelect =
-    ({ description }) =>
+    ({ description, place_id }) =>
     () => {
+      getDetails({
+        placeId: place_id,
+      })
+        .then((details) => {
+          setPlace(details);
+        })
+        .catch((error) => {
+          console.log("Error: ", error);
+        });
+
       setValue(description, false);
       clearSuggestions();
       getGeocode({ address: description }).then((results) => {
@@ -55,12 +70,12 @@ export default function PlaceSearch({ placeCoordinates, setPlaceCoordinates }) {
 
   return (
     <div ref={ref}>
-      <input
+      <Input
         value={value}
         onChange={handleInput}
+        placeholder="to where?"
+        variant="transparent"
         disabled={!ready}
-        placeholder="Where are you going?"
-        className="mx-2 px-5 bg-green-500"
       />
       {status === "OK" && <ul>{renderSuggestions()}</ul>}
     </div>
