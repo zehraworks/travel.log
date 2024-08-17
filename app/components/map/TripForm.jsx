@@ -3,14 +3,17 @@ import React, { useState } from "react";
 import PlaceSearch from "./PlaceSearch";
 import { Button } from "@/components/ui/button";
 
-export default function TripForm({ placeCoordinates, setPlaceCoordinates }) {
+export default function TripForm({
+  placeCoordinate,
+  setPlaceCoordinate,
+  setPinnedLocations,
+  pinnedLocations,
+}) {
   const [place, setPlace] = useState(null);
-
-  console.log("plaaaa", place);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const { lat, lng } = placeCoordinates;
+    const { lat, lng } = placeCoordinate;
 
     try {
       const res = await fetch("/api/pinned-location/addPlace", {
@@ -19,22 +22,18 @@ export default function TripForm({ placeCoordinates, setPlaceCoordinates }) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          name: "Example Location",
-          desc: "A description of the place",
+          name: place?.name,
           latitude: lat,
           longitude: lng,
-          status: "COMPLETED",
-          continent: "EUROPE",
         }),
       });
-
       if (!res.ok) {
-        console.log("resoooo", res);
-        throw new Error("Failed to add pinned location");
+        const error = await res.json();
+        console.log("Error:", error);
+      } else {
+        const data = await res.json();
+        setPinnedLocations((prevLocations) => [...prevLocations, data]);
       }
-
-      const data = await res.json();
-      console.log("Pinned location added:", data);
     } catch (error) {
       console.error(error);
     }
@@ -45,8 +44,8 @@ export default function TripForm({ placeCoordinates, setPlaceCoordinates }) {
       <form onSubmit={handleSubmit}>
         <PlaceSearch
           setPlace={setPlace}
-          placeCoordinates={placeCoordinates}
-          setPlaceCoordinates={setPlaceCoordinates}
+          placeCoordinate={placeCoordinate}
+          setPlaceCoordinate={setPlaceCoordinate}
         />
         <Button type="submit" variant="accent">
           Add to my place

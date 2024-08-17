@@ -15,6 +15,27 @@ export async function POST(req) {
   const userId = session.user.id;
 
   try {
+    const existingLocation = await prisma.pinnedLocation.findFirst({
+      where: {
+        latitude: latitude,
+        longitude: longitude,
+      },
+    });
+
+    if (existingLocation) {
+      return new Response(
+        JSON.stringify({
+          error: "A place with the same latitude and longitude already exists.",
+        }),
+        {
+          status: 400,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+    }
+
     const pinnedLocation = await prisma.pinnedLocation.create({
       data: {
         name,

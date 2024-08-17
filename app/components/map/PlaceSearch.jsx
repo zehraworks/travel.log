@@ -8,8 +8,8 @@ import useOnclickOutside from "react-cool-onclickoutside";
 import { Input } from "@/components/ui/input";
 
 export default function PlaceSearch({
-  placeCoordinates,
-  setPlaceCoordinates,
+  placeCoordinate,
+  setPlaceCoordinate,
   setPlace,
 }) {
   const {
@@ -46,7 +46,7 @@ export default function PlaceSearch({
       clearSuggestions();
       getGeocode({ address: description }).then((results) => {
         const coordinates = getLatLng(results[0]);
-        setPlaceCoordinates(coordinates);
+        setPlaceCoordinate(coordinates);
       });
     };
 

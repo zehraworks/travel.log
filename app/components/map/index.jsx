@@ -5,20 +5,25 @@ import Map from "./Map";
 import { useState } from "react";
 
 export default function MapComponent() {
-  const [placeCoordinates, setPlaceCoordinates] = useState(null);
+  const [placeCoordinate, setPlaceCoordinate] = useState(null);
+  const [pinnedLocations, setPinnedLocations] = useState([]);
 
   return (
     <div className="flex">
       <div className="w-1/5">
         <TripForm
-          placeCoordinates={placeCoordinates}
-          setPlaceCoordinates={setPlaceCoordinates}
+          placeCoordinate={placeCoordinate}
+          setPlaceCoordinate={setPlaceCoordinate}
+          pinnedLocations={pinnedLocations}
+          setPinnedLocations={setPinnedLocations}
         />
       </div>
       <div className="w-4/5">
         <Map
-          placeCoordinates={placeCoordinates}
-          setPlaceCoordinates={setPlaceCoordinates}
+          placeCoordinate={placeCoordinate}
+          setPlaceCoordinate={setPlaceCoordinate}
+          pinnedLocations={pinnedLocations}
+          setPinnedLocations={setPinnedLocations}
         />
       </div>
     </div>
