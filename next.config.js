@@ -8,7 +8,12 @@ module.exports = {
     GITHUB_CLIENT_SECRET: process.env.GITHUB_CLIENT_SECRET,
     MONGODB_URL: process.env.MONGODB_URL,
   },
-  images: {
-    domains: ["lh3.googleusercontent.com"],
+ images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "lh3.googleusercontent.com",
+      },
+    ],
   },
 };
