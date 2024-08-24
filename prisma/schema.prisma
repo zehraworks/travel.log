@@ -66,14 +66,16 @@ model VerificationToken {
 }
 
 model Post {
-  id             String           @id @default(auto()) @map("_id") @db.ObjectId
-  title          String
-  published      Boolean          @default(false)
-  author         User             @relation(fields: [authorId], references: [id])
-  authorId       String           @db.ObjectId
-  createdAt      DateTime         @default(now())
-  updatedAt      DateTime         @updatedAt
-  PinnedLocation PinnedLocation[]
+  id               String         @id @default(auto()) @map("_id") @db.ObjectId
+  title            String
+  content          Json
+  published        Boolean        @default(false)
+  author           User           @relation(fields: [authorId], references: [id])
+  authorId         String         @db.ObjectId
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+  pinnedLocation   PinnedLocation @relation(fields: [pinnedLocationId], references: [id])
+  pinnedLocationId String         @db.ObjectId
 }
 
 model PinnedLocation {
@@ -86,8 +88,7 @@ model PinnedLocation {
   continent Continent?
   user      User       @relation(fields: [userId], references: [id])
   userId    String     @db.ObjectId
-  post      Post?      @relation(fields: [postId], references: [id])
-  postId    String?    @db.ObjectId
+  posts     Post[]
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
 }

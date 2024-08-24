@@ -2,6 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
+h1 {
+  font-size: 2.25rem; /* Örnek stil */
+  font-weight: bold;
+}
+h2 {
+  font-size: 1.875rem;
+  font-weight: bold;
+}
+
+
 @layer base {
   :root {
     --background: 59.5 100% 76.67%;
