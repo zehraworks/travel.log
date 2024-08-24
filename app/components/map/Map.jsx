@@ -151,7 +151,9 @@ export default function Map({
               >
                 <div className="flex flex-col space-y-3 bg-gray-500 h-32">
                   {posts?.map((post) => (
-                    <p className="bg-green-300">{post?.title}</p>
+                    <p key={post?.id} className="bg-green-300">
+                      {post?.title}
+                    </p>
                   ))}
                   <p1>{place?.name}</p1>
                   <button
