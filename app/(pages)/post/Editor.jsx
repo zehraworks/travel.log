@@ -10,19 +10,15 @@ import Paragraph from "@editorjs/paragraph";
 import tableUmd from "@editorjs/table";
 import markerUmd from "@editorjs/marker"; */
 
-export default function Editor({ placeId }) {
+export default function Editor({ placeId, posts, setValue }) {
   const ejInstance = useRef(null);
   const [editorData, setEditorData] = useState(null);
 
   useEffect(() => {
-    if (ejInstance.current === null) {
+    if (!ejInstance.current) {
       initEditor();
+      ejInstance.current = true;
     }
-
-    return () => {
-      ejInstance?.current?.destroy();
-      ejInstance.current = null;
-    };
   }, []);
 
   const initEditor = () => {
@@ -30,7 +26,6 @@ export default function Editor({ placeId }) {
       holder: "editorjs",
       onReady: () => {
         ejInstance.current = editor;
-        console.log("editoo", editor);
       },
       autofocus: true,
       onChange: async () => {
@@ -98,7 +93,7 @@ export default function Editor({ placeId }) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          title: "My New Post",
+          title: "My New Post 22",
           content: editorData,
           pinnedLocationId: placeId,
         }),
@@ -107,6 +102,14 @@ export default function Editor({ placeId }) {
       if (!res.ok) {
         console.error("Failed to save the post");
       } else {
+        const newPost = await res.json();
+        setValue({ posts: [...posts, newPost] });
+
+        if (ejInstance.current) {
+          ejInstance.current.clear();
+        }
+
+        setEditorData(null);
         console.log("Post saved successfully");
       }
     } catch (error) {

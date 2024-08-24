@@ -3,6 +3,7 @@ import { Raleway } from "next/font/google";
 import { getServerSession } from "next-auth";
 import SessionProvider from "./components/SessionProvider";
 import NavMenu from "./components/NavMenu";
+import { GlobalProvider } from "@/context/postContext.jsx";
 
 const raleway = Raleway({ subsets: ["latin"] });
 
@@ -22,10 +23,12 @@ export default async function RootLayout({ children }) {
         ></script>
       </head>
       <body className={raleway.className}>
-        <SessionProvider session={session}>
-          <NavMenu />
-          {children}
-        </SessionProvider>
+        <GlobalProvider>
+          <SessionProvider session={session}>
+            <NavMenu />
+            {children}
+          </SessionProvider>
+        </GlobalProvider>
       </body>
     </html>
   );

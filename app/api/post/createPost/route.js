@@ -13,16 +13,8 @@ export async function POST(req) {
 
   const authorId = session.user.id;
   try {
-    const post = await prisma.post.upsert({
-      where: {
-        pinnedLocationId,
-        authorId,
-      },
-      update: {
-        title,
-        content,
-      },
-      create: {
+    const post = await prisma.post.create({
+      data: {
         title,
         content,
         authorId,

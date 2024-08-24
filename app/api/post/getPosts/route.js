@@ -7,7 +7,6 @@ export async function GET(req) {
 
   const url = new URL(req.url);
   const placeId = url.searchParams.get("placeId");
-  console.log("plll", placeId);
 
   if (!session) {
     return new Response(JSON.stringify({ error: "Unauthorized" }), {
@@ -30,16 +29,14 @@ export async function GET(req) {
   }
 
   try {
-    const post = await prisma.post.findMany({
+    const posts = await prisma.post.findMany({
       where: {
         authorId: userId,
         pinnedLocationId: placeId,
       },
     });
 
-    console.log("postii", post);
-
-    return new Response(JSON.stringify({ post }));
+    return new Response(JSON.stringify({ posts }));
   } catch (error) {
     console.error("API Error:", error);
 

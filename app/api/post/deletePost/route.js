@@ -17,13 +17,13 @@ export async function DELETE(req) {
   }
 
   try {
-    const deleteLocation = await prisma.pinnedLocation.delete({
+    const deletePost = await prisma.post.delete({
       where: {
         id: id,
       },
     });
 
-    return new Response(JSON.stringify(deleteLocation), {
+    return new Response(JSON.stringify(deletePost), {
       status: 201,
       headers: {
         "Content-Type": "application/json",
@@ -31,7 +31,7 @@ export async function DELETE(req) {
     });
   } catch (error) {
     return new Response(
-      JSON.stringify({ error: "Failed to delete pinned location" }),
+      JSON.stringify({ error: "Failed to delete post" }),
       {
         status: 500,
         headers: {

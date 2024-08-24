@@ -7,6 +7,7 @@ import {
   InfoWindow,
 } from "@react-google-maps/api";
 import { useRouter } from "next/navigation";
+import { useGlobal } from "@/context/postContext.jsx";
 
 export default function Map({
   placeCoordinate,
@@ -16,7 +17,8 @@ export default function Map({
 }) {
   const [activeMarker, setActiveMarker] = useState(null);
   const [infoWindowVisible, setInfoWindowVisible] = useState(false);
-  const [postTitle, setPostTitle] = useState(null);
+
+  const { posts, setValue } = useGlobal();
 
   const router = useRouter();
 
@@ -103,15 +105,13 @@ export default function Map({
   };
 
   const handleInfoWindowLoad = async (placeId) => {
-    console.log("mamama", placeId);
     try {
-      const response = await fetch(`/api/post/getPost?placeId=${placeId}`);
+      const response = await fetch(`/api/post/getPosts?placeId=${placeId}`);
       if (!response.ok) {
         throw new Error("Failed to fetch post");
       }
       const data = await response.json();
-      console.log("Post Data:", data);
-      setPostTitle(data?.post[0].title);
+      setValue({ posts: data?.posts });
     } catch (error) {
       console.error("Error fetching post:", error);
     }
@@ -150,7 +150,9 @@ export default function Map({
                 position={{ lat: place?.latitude, lng: place?.longitude }}
               >
                 <div className="flex flex-col space-y-3 bg-gray-500 h-32">
-                  <p className="bg-green-400">{postTitle}</p>
+                  {posts?.map((post) => (
+                    <p className="bg-green-300">{post?.title}</p>
+                  ))}
                   <p1>{place?.name}</p1>
                   <button
                     className="bg-blue-700 w-full"
