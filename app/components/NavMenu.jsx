@@ -1,21 +1,13 @@
 "use client";
+
 import Image from "next/image";
-import logo from "../../public/logo.svg";
+import { Menu, Text, Button, Group, Divider } from "@mantine/core";
 import { useSession, signOut } from "next-auth/react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
+import logo from "../../public/logo.svg";
 
 function AuthButton() {
   const { data: session } = useSession();
-
   const router = useRouter();
 
   const handleRedirect = () => {
@@ -24,48 +16,55 @@ function AuthButton() {
 
   if (session) {
     return (
-      <DropdownMenu>
-        <DropdownMenuTrigger className="text-lg font-semibol text-slate-600 cursor-pointer sm:text-sm hover:text-slate-800 flex items-center dark:text-gray-300 dark:hover:text-gray-400">
-          {session?.user?.image && (
-            <Image
-              src={session?.user?.image}
-              alt={session?.user?.name}
-              width={40}
-              height={40}
-              className="rounded-full mr-2"
-            />
-          )}
-          <h1 className="text-2xl">{session.user?.name}</h1>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent>
-          <DropdownMenuLabel>My Account</DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem
-            onClick={() => signOut()}
-            className="text-slate-500"
-          >
+      <Menu>
+        <Menu.Target>
+          <Group>
+            {session?.user?.image && (
+              <Image
+                src={session?.user?.image}
+                alt={session?.user?.name}
+                width={40}
+                height={40}
+                radius="xl"
+              />
+            )}
+            <Text size="lg" weight={500}>
+              {session.user?.name}
+            </Text>
+          </Group>
+        </Menu.Target>
+        <Menu.Dropdown>
+          <Menu.Label>My Account</Menu.Label>
+          <Divider />
+          <Menu.Item onClick={() => signOut()} color="gray">
             Logout
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+          </Menu.Item>
+        </Menu.Dropdown>
+      </Menu>
     );
   }
-  return <button onClick={handleRedirect}>SignIn</button>;
+
+  return <Button onClick={handleRedirect}>Sign In</Button>;
 }
 
 export default function NavMenu() {
-  const pathName = usePathname();
+  const { pathname } = useRouter();
+
   return (
     <div className="bg-background text-foreground flex w-full h-[140px] justify-center py-5">
-      <div className=" container flex flex-row justify-between items-center text-2xl font-medium">
-        <div>
-          <Image alt="logo" className="h-20 invert dark:invert-0" src={logo} />
-        </div>
+      <div className="container flex flex-row justify-between items-center text-2xl font-medium">
+        <Image
+          alt="logo"
+          src={logo}
+          width={80}
+          height={80}
+          className="invert dark:invert-0"
+        />
         <div className="flex text-xl space-x-24 mt-10">
-          <h1>HOME</h1>
-          <h1>ABOUT US</h1>
-          <h1>BLOG</h1>
-          {pathName !== "/register" && <AuthButton />}
+          <Text>HOME</Text>
+          <Text>ABOUT US</Text>
+          <Text>BLOG</Text>
+          {pathname !== "/register" && <AuthButton />}
         </div>
       </div>
     </div>

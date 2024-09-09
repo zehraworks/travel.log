@@ -1,7 +1,8 @@
 "use client";
+
 import React, { useState } from "react";
+import { Button, Container, Paper, Group } from "@mantine/core";
 import PlaceSearch from "./PlaceSearch";
-import { Button } from "@/components/ui/button";
 
 export default function TripForm({
   placeCoordinate,
@@ -27,6 +28,7 @@ export default function TripForm({
           longitude: lng,
         }),
       });
+
       if (!res.ok) {
         const error = await res.json();
         console.log("Error:", error);
@@ -40,17 +42,26 @@ export default function TripForm({
   };
 
   return (
-    <div className="bg-red-500 h-full">
-      <form onSubmit={handleSubmit}>
-        <PlaceSearch
-          setPlace={setPlace}
-          placeCoordinate={placeCoordinate}
-          setPlaceCoordinate={setPlaceCoordinate}
-        />
-        <Button type="submit" variant="accent">
-          Add to my place
-        </Button>
-      </form>
-    </div>
+    <Container
+      style={{ backgroundColor: "#f5f5f5", height: "100%", padding: "20px" }}
+    >
+      <Paper
+        padding="md"
+        style={{ backgroundColor: "#fff", borderRadius: "8px" }}
+      >
+        <form onSubmit={handleSubmit}>
+          <PlaceSearch
+            setPlace={setPlace}
+            placeCoordinate={placeCoordinate}
+            setPlaceCoordinate={setPlaceCoordinate}
+          />
+          <Group position="center" style={{ marginTop: "20px" }}>
+            <Button type="submit" color="blue" variant="filled">
+              Add to my place
+            </Button>
+          </Group>
+        </form>
+      </Paper>
+    </Container>
   );
 }

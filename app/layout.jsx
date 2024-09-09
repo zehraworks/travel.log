@@ -4,6 +4,7 @@ import { getServerSession } from "next-auth";
 import SessionProvider from "./components/SessionProvider";
 import NavMenu from "./components/NavMenu";
 import { GlobalProvider } from "@/context/postContext.jsx";
+import { MantineProvider } from "@mantine/core";
 
 const raleway = Raleway({ subsets: ["latin"] });
 
@@ -23,12 +24,18 @@ export default async function RootLayout({ children }) {
         ></script>
       </head>
       <body className={raleway.className}>
-        <GlobalProvider>
-          <SessionProvider session={session}>
-            <NavMenu />
-            {children}
-          </SessionProvider>
-        </GlobalProvider>
+        <MantineProvider
+          theme={{ colorScheme: "dark" }}
+          withGlobalStyles
+          withNormalizeCSS
+        >
+          <GlobalProvider>
+            <SessionProvider session={session}>
+              <NavMenu />
+              {children}
+            </SessionProvider>
+          </GlobalProvider>
+        </MantineProvider>
       </body>
     </html>
   );
