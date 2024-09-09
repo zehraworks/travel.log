@@ -1,19 +1,10 @@
 "use client";
 
 import { useState } from "react";
-
+import { useForm } from "@mantine/form";
+import { TextInput, PasswordInput, Button, Alert } from "@mantine/core";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
 
 const formSchema = z
@@ -22,8 +13,8 @@ const formSchema = z
     email: z.string().email("Invalid email format"),
     password: z
       .string()
-      .min(6, { message: "Password must be at least 6 character" })
-      .max(12, { message: "Password must be maximum 12 character" }),
+      .min(6, { message: "Password must be at least 6 characters" })
+      .max(12, { message: "Password must be maximum 12 characters" }),
     passwordMatch: z.string(),
   })
   .refine((data) => data.password === data.passwordMatch, {
@@ -37,8 +28,8 @@ export default function SignUpForm() {
   const router = useRouter();
 
   const form = useForm({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
+    schema: formSchema,
+    initialValues: {
       name: "",
       email: "",
       password: "",
@@ -87,79 +78,49 @@ export default function SignUpForm() {
 
       router.push("/signin");
     } catch (error) {
-      console.log(error.message);
+      setError(error.message);
     }
   };
 
   return (
-    <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="space-y-3 w-full text-primary-foreground"
-      >
-        <FormField
-          control={form.control}
-          name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormControl>
-                <Input variant="transparent" placeholder="name" {...field} />
-              </FormControl>
-              <FormMessage />
-              {nameError && <div className="text-red-500">{nameError}</div>}
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="email"
-          render={({ field }) => (
-            <FormItem>
-              <FormControl>
-                <Input variant="transparent" placeholder="email" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="password"
-          render={({ field }) => (
-            <FormItem>
-              <FormControl>
-                <Input
-                  variant="transparent"
-                  type="password"
-                  placeholder="password"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="passwordMatch"
-          render={({ field }) => (
-            <FormItem>
-              <FormControl>
-                <Input
-                  variant="transparent"
-                  type="password"
-                  placeholder="passwordMatch"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <Button type="submit" variant="accent">
-          Submit
-        </Button>
-      </form>
-    </Form>
+    <form
+      onSubmit={form.onSubmit(onSubmit)}
+      className="space-y-3 w-full text-primary-foreground"
+    >
+      <TextInput
+        label="Name"
+        placeholder="name"
+        {...form.getInputProps("name")}
+        error={form.errors.name}
+      />
+      {nameError && <Alert color="red">{nameError}</Alert>}
+
+      <TextInput
+        label="Email"
+        placeholder="email"
+        {...form.getInputProps("email")}
+        error={form.errors.email}
+      />
+
+      <PasswordInput
+        label="Password"
+        placeholder="password"
+        {...form.getInputProps("password")}
+        error={form.errors.password}
+      />
+
+      <PasswordInput
+        label="Confirm Password"
+        placeholder="confirm password"
+        {...form.getInputProps("passwordMatch")}
+        error={form.errors.passwordMatch}
+      />
+
+      {error && <Alert color="red">{error}</Alert>}
+
+      <Button type="submit" variant="filled" color="blue">
+        Submit
+      </Button>
+    </form>
   );
 }

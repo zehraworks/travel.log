@@ -1,17 +1,19 @@
 "use client";
+
 import usePlacesAutocomplete, {
   getDetails,
   getGeocode,
   getLatLng,
 } from "use-places-autocomplete";
-import useOnclickOutside from "react-cool-onclickoutside";
-import { Input } from "@/components/ui/input";
+import { useState, useCallback } from "react";
+import { TextInput, Menu, MenuItem, Paper } from "@mantine/core";
 
 export default function PlaceSearch({
   placeCoordinate,
   setPlaceCoordinate,
   setPlace,
 }) {
+  const [open, setOpen] = useState(false);
   const {
     ready,
     value,
@@ -21,34 +23,39 @@ export default function PlaceSearch({
   } = usePlacesAutocomplete({
     debounce: 300,
   });
-  const ref = useOnclickOutside(() => {
-    clearSuggestions();
-  });
 
   const handleInput = (e) => {
     setValue(e.target.value);
+    setOpen(true);
   };
 
-  const handleSelect =
+  const handleSelect = useCallback(
     ({ description, place_id }) =>
-    () => {
-      getDetails({
-        placeId: place_id,
-      })
-        .then((details) => {
+      async () => {
+        try {
+          const details = await getDetails({ placeId: place_id });
           setPlace(details);
-        })
-        .catch((error) => {
-          console.log("Error: ", error);
-        });
 
-      setValue(description, false);
-      clearSuggestions();
-      getGeocode({ address: description }).then((results) => {
-        const coordinates = getLatLng(results[0]);
-        setPlaceCoordinate(coordinates);
-      });
-    };
+          setValue(description, false);
+          clearSuggestions();
+          const results = await getGeocode({ address: description });
+          const coordinates = getLatLng(results[0]);
+          setPlaceCoordinate(coordinates);
+        } catch (error) {
+          console.log("Error: ", error);
+        }
+        setOpen(false);
+      },
+    [
+      clearSuggestions,
+      getDetails,
+      getGeocode,
+      getLatLng,
+      setPlace,
+      setPlaceCoordinate,
+      setValue,
+    ]
+  );
 
   const renderSuggestions = () =>
     data.map((suggestion) => {
@@ -58,26 +65,40 @@ export default function PlaceSearch({
       } = suggestion;
 
       return (
-        <li
-          className="bg-blue-100 my-1 cursor-pointer"
+        <MenuItem
           key={place_id}
           onClick={handleSelect(suggestion)}
+          style={{ cursor: "pointer" }}
         >
           <strong>{main_text}</strong> <small>{secondary_text}</small>
-        </li>
+        </MenuItem>
       );
     });
 
   return (
-    <div ref={ref}>
-      <Input
+    <div>
+      <TextInput
         value={value}
         onChange={handleInput}
         placeholder="to where?"
-        variant="transparent"
+        variant="filled"
         disabled={!ready}
+        onFocus={() => setOpen(true)}
+        onBlur={() => setTimeout(() => setOpen(false), 200)} // Delay to allow click events
       />
-      {status === "OK" && <ul>{renderSuggestions()}</ul>}
+      {open && status === "OK" && (
+        <Paper style={{ position: "absolute", zIndex: 10, width: "100%" }}>
+          <Menu
+            size="sm"
+            opened={open}
+            onClose={() => setOpen(false)}
+            closeOnClickOutside
+            withArrow
+          >
+            {renderSuggestions()}
+          </Menu>
+        </Paper>
+      )}
     </div>
   );
 }
