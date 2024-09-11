@@ -1,12 +1,13 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../auth/[...nextauth]/route";
 import prisma from "@/prisma";
+import { NextResponse } from "next/server";
 
-export async function GET() {
+export async function GET(): Promise<NextResponse> {
   const session = await getServerSession(authOptions);
 
-  if (!session) {
-    return new Response(JSON.stringify({ error: "Unauthorized" }), {
+  if (!session || !session.user) {
+    return new NextResponse(JSON.stringify({ error: "Unauthorized" }), {
       status: 401,
       headers: {
         "Content-Type": "application/json",
@@ -23,9 +24,9 @@ export async function GET() {
       },
     });
 
-    return new Response(JSON.stringify({ pinnedLocations }));
+    return new NextResponse(JSON.stringify({ pinnedLocations }));
   } catch (error) {
-    return new Response(
+    return new NextResponse(
       JSON.stringify({ error: "Failed to get pinned locations" }),
       {
         status: 500,

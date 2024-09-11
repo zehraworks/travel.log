@@ -1,4 +1,5 @@
-import NextAuth from "next-auth";
+import NextAuth, { AuthOptions } from "next-auth";
+import { NextApiHandler } from "next";
 import GithubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
@@ -8,18 +9,17 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-export const authOptions = {
-  adapter: PrismaAdapter(prisma),
+export const authOptions: AuthOptions = {
+  adapter: PrismaAdapter(prisma) as any,
   providers: [
     GithubProvider({
-      clientId: process.env.GITHUB_CLIENT_ID,
-      clientSecret: process.env.GITHUB_CLIENT_SECRET,
+      clientId: process.env.GITHUB_CLIENT_ID as string,
+      clientSecret: process.env.GITHUB_CLIENT_SECRET as string,
     }),
     GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      clientId: process.env.GOOGLE_CLIENT_ID as string,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
     }),
-
     CredentialsProvider({
       name: "Credentials",
       credentials: {
@@ -38,9 +38,7 @@ export const authOptions = {
         }
 
         const user = await prisma.user.findUnique({
-          where: {
-            email: credentials.email,
-          },
+          where: { email: credentials.email },
         });
 
         if (!user || !user?.hashedPassword) {
@@ -55,8 +53,12 @@ export const authOptions = {
         if (!isCorrectPassword) {
           throw new Error("Invalid password");
         }
-
-        return user;
+        return {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          image: user.image,
+        };
       },
     }),
   ],
@@ -65,19 +67,27 @@ export const authOptions = {
   },
   callbacks: {
     async jwt({ token, user }) {
-      return { ...token, ...user };
+      if (user) {
+        token.id = user.id as string;
+      }
+      return token;
     },
-    async session({ session, token, user }) {
-      session.user = token;
+    async session({ session, token }) {
+      session.user = {
+        id: token.id as string,
+        name: session.user?.name ?? null,
+        email: session.user?.email ?? null,
+        image: session.user?.image ?? null,
+      };
       return session;
     },
   },
-  secret: process.env.NEXTAUTH_SECRET,
+  secret: process.env.NEXTAUTH_SECRET as string,
   pages: {
     signIn: "/signin",
   },
 };
 
-export const handler = NextAuth(authOptions);
+export const handler: NextApiHandler = NextAuth(authOptions);
 
 export { handler as GET, handler as POST };

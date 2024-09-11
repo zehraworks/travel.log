@@ -4,9 +4,27 @@ import TripForm from "./TripForm";
 import Map from "./Map";
 import { useState } from "react";
 
+interface PlaceCoordinate {
+  latitude: number;
+  longitude: number;
+}
+
+interface PinnedLocation {
+  id: string;
+  name: string;
+  desc?: string;
+  latitude: number;
+  longitude: number;
+  status: string;
+  continent?: string;
+  userId: string;
+}
+
+
 export default function MapComponent() {
-  const [placeCoordinate, setPlaceCoordinate] = useState(null);
-  const [pinnedLocations, setPinnedLocations] = useState([]);
+  const [placeCoordinate, setPlaceCoordinate] =
+    useState<PlaceCoordinate | null>(null);
+  const [pinnedLocations, setPinnedLocations] = useState<PinnedLocation[]>([]);
 
   return (
     <div className="flex">

@@ -7,19 +7,43 @@ import {
   InfoWindow,
 } from "@react-google-maps/api";
 import { useRouter } from "next/navigation";
-import { useGlobal } from "@/context/postContext.jsx";
+import { useGlobal } from "@/context/postContext";
+
+type PlaceCoordinate = {
+  lat: number;
+  lng: number;
+};
+
+type PinnedLocation = {
+  id: string;
+  name: string;
+  desc?: string;
+  latitude: number;
+  longitude: number;
+  status: string;
+  continent?: string;
+  userId: string;
+};
+
+type MapProps = {
+  placeCoordinate: PlaceCoordinate | null;
+  setPlaceCoordinate: React.Dispatch<
+    React.SetStateAction<PlaceCoordinate | null>
+  >;
+  pinnedLocations: PinnedLocation[];
+  setPinnedLocations: React.Dispatch<React.SetStateAction<PinnedLocation[]>>;
+};
 
 export default function Map({
   placeCoordinate,
   setPlaceCoordinate,
   pinnedLocations,
   setPinnedLocations,
-}) {
-  const [activeMarker, setActiveMarker] = useState(null);
+}: MapProps) {
+  const [activeMarker, setActiveMarker] = useState<string | null>(null);
   const [infoWindowVisible, setInfoWindowVisible] = useState(false);
 
   const { posts, setValue } = useGlobal();
-
   const router = useRouter();
 
   useEffect(() => {
@@ -34,10 +58,10 @@ export default function Map({
     }
 
     fetchPinnedLocations();
-  }, []);
+  }, [setPinnedLocations]);
 
-  const handleMarkerMouseEnter = (index) => {
-    setActiveMarker(index);
+  const handleMarkerMouseEnter = (id: string) => {
+    setActiveMarker(id);
     setInfoWindowVisible(true);
   };
 
@@ -70,17 +94,17 @@ export default function Map({
   };
 
   const options = {
-    mapId: process.env.NEXT_PUBLIC_MAP_ID,
+    mapId: process.env.NEXT_PUBLIC_MAP_ID as string,
     mapTypeControl: false,
     streetViewControl: false,
   };
 
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
-    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
+    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string,
   });
 
-  const handleDelete = async (id) => {
+  const handleDelete = async (id: string) => {
     try {
       const response = await fetch(
         `/api/pinned-location/deletePlace?id=${id}`,
@@ -100,11 +124,11 @@ export default function Map({
     }
   };
 
-  const handleAddPost = async (placeId) => {
+  const handleAddPost = (placeId: string) => {
     router.push(`/post/${placeId}`);
   };
 
-  const handleInfoWindowLoad = async (placeId) => {
+  const handleInfoWindowLoad = async (placeId: string) => {
     try {
       const response = await fetch(`/api/post/getPosts?placeId=${placeId}`);
       if (!response.ok) {
@@ -120,7 +144,7 @@ export default function Map({
   return isLoaded ? (
     <GoogleMap
       mapContainerStyle={containerStyle}
-      center={placeCoordinate ? placeCoordinate : centerCoordinate}
+      center={placeCoordinate || centerCoordinate}
       zoom={13}
       options={options}
     >
@@ -129,50 +153,49 @@ export default function Map({
           position={{ lat: placeCoordinate.lat, lng: placeCoordinate.lng }}
         />
       )}
-      {pinnedLocations &&
-        pinnedLocations.map((place) => (
-          <MarkerF
-            key={place?.id}
-            onMouseOver={() => handleMarkerMouseEnter(place?.id)}
-            onMouseOut={handleMarkerMouseLeave}
-            icon={{
-              url: "/dot.svg",
-              anchor: new google.maps.Point(15, 15),
-              scaledSize: new window.google.maps.Size(30, 30),
-            }}
-            position={{ lat: place?.latitude, lng: place?.longitude }}
-          >
-            {activeMarker === place?.id && (
-              <InfoWindow
-                onLoad={() => handleInfoWindowLoad(place?.id)}
-                onMouseOver={handleInfoWindowMouseEnter}
-                onMouseOut={handleInfoWindowMouseLeave}
-                position={{ lat: place?.latitude, lng: place?.longitude }}
-              >
-                <div className="flex flex-col space-y-3 bg-gray-500 h-32">
-                  {posts?.map((post) => (
-                    <p key={post?.id} className="bg-green-300">
-                      {post?.title}
-                    </p>
-                  ))}
-                  <p1>{place?.name}</p1>
-                  <button
-                    className="bg-blue-700 w-full"
-                    onClick={() => handleAddPost(place.id)}
-                  >
-                    add blog post
-                  </button>
-                  <button
-                    className="bg-red-700 w-full"
-                    onClick={() => handleDelete(place.id)}
-                  >
-                    delete place
-                  </button>
-                </div>
-              </InfoWindow>
-            )}
-          </MarkerF>
-        ))}
+      {pinnedLocations.map((place) => (
+        <MarkerF
+          key={place.id}
+          onMouseOver={() => handleMarkerMouseEnter(place.id)}
+          onMouseOut={handleMarkerMouseLeave}
+          icon={{
+            url: "/dot.svg",
+            anchor: new google.maps.Point(15, 15),
+            scaledSize: new window.google.maps.Size(30, 30),
+          }}
+          position={{ lat: place.latitude, lng: place.longitude }}
+        >
+          {activeMarker === place.id && (
+            <InfoWindow
+              onLoad={() => handleInfoWindowLoad(place.id)}
+              onMouseOver={handleInfoWindowMouseEnter}
+              onMouseOut={handleInfoWindowMouseLeave}
+              position={{ lat: place.latitude, lng: place.longitude }}
+            >
+              <div className="flex flex-col space-y-3 bg-gray-500 h-32">
+                {posts?.map((post) => (
+                  <p key={post.id} className="bg-green-300">
+                    {post.title}
+                  </p>
+                ))}
+                <p>{place.name}</p>
+                <button
+                  className="bg-blue-700 w-full"
+                  onClick={() => handleAddPost(place.id)}
+                >
+                  Add blog post
+                </button>
+                <button
+                  className="bg-red-700 w-full"
+                  onClick={() => handleDelete(place.id)}
+                >
+                  Delete place
+                </button>
+              </div>
+            </InfoWindow>
+          )}
+        </MarkerF>
+      ))}
     </GoogleMap>
   ) : (
     <></>

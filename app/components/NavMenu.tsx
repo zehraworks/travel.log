@@ -1,10 +1,17 @@
 "use client";
 
+import React from "react";
 import Image from "next/image";
 import { Menu, Text, Button, Group, Divider } from "@mantine/core";
 import { useSession, signOut } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import logo from "../../public/logo.svg";
+
+type SessionUser = {
+  name?: string;
+  email?: string;
+  image?: string;
+};
 
 function AuthButton() {
   const { data: session } = useSession();
@@ -15,22 +22,21 @@ function AuthButton() {
   };
 
   if (session) {
+    const user = session.user as SessionUser;
+
     return (
       <Menu>
         <Menu.Target>
           <Group>
-            {session?.user?.image && (
+            {user.image && (
               <Image
-                src={session?.user?.image}
-                alt={session?.user?.name}
+                src={user.image}
+                alt={user.name || "User"}
                 width={40}
                 height={40}
-                radius="xl"
               />
             )}
-            <Text size="lg" weight={500}>
-              {session.user?.name}
-            </Text>
+            <Text size="lg">{user.name}</Text>
           </Group>
         </Menu.Target>
         <Menu.Dropdown>
@@ -48,7 +54,7 @@ function AuthButton() {
 }
 
 export default function NavMenu() {
-  const { pathname } = useRouter();
+  const pathname = usePathname();
 
   return (
     <div className="bg-background text-foreground flex w-full h-[140px] justify-center py-5">

@@ -1,12 +1,14 @@
 "use client";
 
+import React from "react";
 import { useState } from "react";
-import { useForm } from "@mantine/form";
+import { useForm, Controller } from "react-hook-form";
 import { TextInput, PasswordInput, Button, Alert } from "@mantine/core";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 
+// Define the schema with Zod
 const formSchema = z
   .object({
     name: z.string(),
@@ -22,14 +24,20 @@ const formSchema = z
     path: ["passwordMatch"],
   });
 
+type FormValues = z.infer<typeof formSchema>;
+
 export default function SignUpForm() {
-  const [error, setError] = useState(null);
-  const [nameError, setNameError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
+  const [nameError, setNameError] = useState<string | null>(null);
   const router = useRouter();
 
-  const form = useForm({
-    schema: formSchema,
-    initialValues: {
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormValues>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
       name: "",
       email: "",
       password: "",
@@ -37,7 +45,7 @@ export default function SignUpForm() {
     },
   });
 
-  const checkUniqueName = async (name) => {
+  const checkUniqueName = async (name: string): Promise<boolean> => {
     setNameError(null);
 
     try {
@@ -55,7 +63,7 @@ export default function SignUpForm() {
     }
   };
 
-  const onSubmit = async (values) => {
+  const onSubmit = async (values: FormValues) => {
     setError(null);
 
     const isUnique = await checkUniqueName(values.name);
@@ -78,42 +86,66 @@ export default function SignUpForm() {
 
       router.push("/signin");
     } catch (error) {
-      setError(error.message);
+      setError((error as Error).message);
     }
   };
 
   return (
     <form
-      onSubmit={form.onSubmit(onSubmit)}
+      onSubmit={handleSubmit(onSubmit)}
       className="space-y-3 w-full text-primary-foreground"
     >
-      <TextInput
-        label="Name"
-        placeholder="name"
-        {...form.getInputProps("name")}
-        error={form.errors.name}
+      <Controller
+        name="name"
+        control={control}
+        render={({ field }) => (
+          <TextInput
+            label="Name"
+            placeholder="name"
+            {...field}
+            error={errors.name?.message}
+          />
+        )}
       />
       {nameError && <Alert color="red">{nameError}</Alert>}
 
-      <TextInput
-        label="Email"
-        placeholder="email"
-        {...form.getInputProps("email")}
-        error={form.errors.email}
+      <Controller
+        name="email"
+        control={control}
+        render={({ field }) => (
+          <TextInput
+            label="Email"
+            placeholder="email"
+            {...field}
+            error={errors.email?.message}
+          />
+        )}
       />
 
-      <PasswordInput
-        label="Password"
-        placeholder="password"
-        {...form.getInputProps("password")}
-        error={form.errors.password}
+      <Controller
+        name="password"
+        control={control}
+        render={({ field }) => (
+          <PasswordInput
+            label="Password"
+            placeholder="password"
+            {...field}
+            error={errors.password?.message}
+          />
+        )}
       />
 
-      <PasswordInput
-        label="Confirm Password"
-        placeholder="confirm password"
-        {...form.getInputProps("passwordMatch")}
-        error={form.errors.passwordMatch}
+      <Controller
+        name="passwordMatch"
+        control={control}
+        render={({ field }) => (
+          <PasswordInput
+            label="Confirm Password"
+            placeholder="confirm password"
+            {...field}
+            error={errors.passwordMatch?.message}
+          />
+        )}
       />
 
       {error && <Alert color="red">{error}</Alert>}
