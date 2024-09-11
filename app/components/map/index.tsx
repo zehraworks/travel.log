@@ -4,12 +4,12 @@ import TripForm from "./TripForm";
 import Map from "./Map";
 import { useState } from "react";
 
-interface PlaceCoordinate {
+type PlaceCoordinate = {
   latitude: number;
   longitude: number;
-}
+};
 
-interface PinnedLocation {
+type PinnedLocation = {
   id: string;
   name: string;
   desc?: string;
@@ -18,8 +18,7 @@ interface PinnedLocation {
   status: string;
   continent?: string;
   userId: string;
-}
-
+};
 
 export default function MapComponent() {
   const [placeCoordinate, setPlaceCoordinate] =

@@ -10,8 +10,8 @@ import { useRouter } from "next/navigation";
 import { useGlobal } from "@/context/postContext";
 
 type PlaceCoordinate = {
-  lat: number;
-  lng: number;
+  latitude: number;
+  longitude: number;
 };
 
 type PinnedLocation = {
@@ -144,13 +144,18 @@ export default function Map({
   return isLoaded ? (
     <GoogleMap
       mapContainerStyle={containerStyle}
-      center={placeCoordinate || centerCoordinate}
+      center={
+        (placeCoordinate || centerCoordinate) as google.maps.LatLngLiteral
+      }
       zoom={13}
       options={options}
     >
       {placeCoordinate && (
         <MarkerF
-          position={{ lat: placeCoordinate.lat, lng: placeCoordinate.lng }}
+          position={{
+            lat: placeCoordinate.latitude,
+            lng: placeCoordinate.longitude,
+          }}
         />
       )}
       {pinnedLocations.map((place) => (
@@ -168,11 +173,13 @@ export default function Map({
           {activeMarker === place.id && (
             <InfoWindow
               onLoad={() => handleInfoWindowLoad(place.id)}
-              onMouseOver={handleInfoWindowMouseEnter}
-              onMouseOut={handleInfoWindowMouseLeave}
               position={{ lat: place.latitude, lng: place.longitude }}
             >
-              <div className="flex flex-col space-y-3 bg-gray-500 h-32">
+              <div
+                className="flex flex-col space-y-3 bg-gray-500 h-32"
+                onMouseOver={handleInfoWindowMouseEnter}
+                onMouseOut={handleInfoWindowMouseLeave}
+              >
                 {posts?.map((post) => (
                   <p key={post.id} className="bg-green-300">
                     {post.title}

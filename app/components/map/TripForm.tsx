@@ -5,8 +5,12 @@ import PlaceSearch from "./PlaceSearch";
 type PinnedLocation = {
   id: string;
   name: string;
+  desc?: string;
   latitude: number;
   longitude: number;
+  status: string;
+  continent?: string;
+  userId: string;
 };
 
 type TripFormProps = {
