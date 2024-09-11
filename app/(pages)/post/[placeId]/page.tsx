@@ -1,12 +1,16 @@
 "use client";
+
 import { useGlobal } from "@/context/postContext";
 import dynamic from "next/dynamic";
 import React, { useEffect } from "react";
 const Editor = dynamic(() => import("../Editor"), { ssr: false });
 
-export default function Post({ params }) {
-  const placeId = params.placeId;
+type Params = {
+  placeId: string;
+};
 
+export default function Post({ params }: { params: Params }) {
+  const placeId = params.placeId;
   const { posts, setValue } = useGlobal();
 
   useEffect(() => {
@@ -25,8 +29,7 @@ export default function Post({ params }) {
     fetchData();
   }, [placeId]);
 
-  const handleDeletePost = async (id) => {
-    console.log("idoo", id);
+  const handleDeletePost = async (id: string) => {
     try {
       const response = await fetch(`/api/post/deletePost?id=${id}`, {
         method: "DELETE",
@@ -44,7 +47,6 @@ export default function Post({ params }) {
       console.log("Failed to delete post", error);
     }
   };
-  console.log("pooo", posts);
   return (
     <div className="bg-slate-300 w-full flex flex-col">
       <div className="bg-blue-400 h-56 flex flex-row space-x-3">
@@ -62,8 +64,8 @@ export default function Post({ params }) {
           <p>No post</p>
         )}
       </div>
-      {/*  <h1>Post Editor</h1>
-      <Editor placeId={placeId} posts={posts} setValue={setValue} /> */}
+       <h1>Post Editor</h1>
+      <Editor placeId={placeId} posts={posts} setValue={setValue} /> 
     </div>
   );
 }

@@ -1,12 +1,13 @@
 import { getServerSession } from "next-auth";
-import { authOptions } from "../../auth/[...nextauth]/route";
+import { authOptions } from "@/app/lib/auth";
 import prisma from "@/prisma";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function POST(req) {
+export async function POST(req: NextRequest): Promise<NextResponse> {
   const session = await getServerSession(authOptions);
 
   if (!session) {
-    return new Response("Unauthorized", { status: 401 });
+    return new NextResponse("Unauthorized", { status: 401 });
   }
 
   const { title, content, pinnedLocationId } = await req.json();
@@ -22,14 +23,14 @@ export async function POST(req) {
       },
     });
 
-    return new Response(JSON.stringify(post), {
+    return new NextResponse(JSON.stringify(post), {
       status: 201,
       headers: {
         "Content-Type": "application/json",
       },
     });
   } catch (error) {
-    return new Response(JSON.stringify({ error: error }), {
+    return new NextResponse(JSON.stringify({ error: error }), {
       status: 500,
       headers: {
         "Content-Type": "application/json",

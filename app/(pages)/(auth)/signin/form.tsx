@@ -1,9 +1,10 @@
 "use client";
 
+import React from "react";
 import { signIn } from "next-auth/react";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "@mantine/form";
+import { useForm, SubmitHandler } from "react-hook-form";
 import { Button, TextInput, PasswordInput, Stack } from "@mantine/core";
 
 const formSchema = z.object({
@@ -17,38 +18,46 @@ const formSchema = z.object({
     .max(12, { message: "Password must be maximum 12 characters" }),
 });
 
+type FormValues = z.infer<typeof formSchema>;
+
 export default function SignInForm() {
-  const form = useForm({
-    schema: formSchema,
-    initialValues: {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormValues>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
       email: "",
       password: "",
     },
   });
 
-  function onSubmit(values) {
+  const onSubmit: SubmitHandler<FormValues> = (values) => {
     signIn("credentials", {
       callbackUrl: "/",
       email: values.email,
       password: values.password,
     });
-  }
+  };
 
   return (
     <form
-      onSubmit={form.onSubmit(onSubmit)}
+      onSubmit={handleSubmit(onSubmit)}
       className="w-full text-primary-foreground"
     >
-      <Stack spacing="md">
+      <Stack gap="md">
         <TextInput
           label="Email address"
           placeholder="Email address"
-          {...form.getInputProps("email")}
+          {...register("email")}
+          error={errors.email?.message}
         />
         <PasswordInput
           label="Password"
           placeholder="Password"
-          {...form.getInputProps("password")}
+          {...register("password")}
+          error={errors.password?.message}
         />
         <Button type="submit" variant="filled">
           Sign In

@@ -1,18 +1,30 @@
-"use client";
-
 import React, { useState } from "react";
 import { Button, Container, Paper, Group } from "@mantine/core";
 import PlaceSearch from "./PlaceSearch";
 
+type PinnedLocation = {
+  id: string;
+  name: string;
+  latitude: number;
+  longitude: number;
+};
+
+type TripFormProps = {
+  placeCoordinate: any;
+  setPlaceCoordinate: React.Dispatch<React.SetStateAction<any>>;
+  pinnedLocations: PinnedLocation[];
+  setPinnedLocations: React.Dispatch<React.SetStateAction<PinnedLocation[]>>;
+};
+
 export default function TripForm({
   placeCoordinate,
   setPlaceCoordinate,
-  setPinnedLocations,
   pinnedLocations,
-}) {
-  const [place, setPlace] = useState(null);
+  setPinnedLocations,
+}: TripFormProps) {
+  const [place, setPlace] = useState<any>(null);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const { lat, lng } = placeCoordinate;
 
@@ -34,7 +46,10 @@ export default function TripForm({
         console.log("Error:", error);
       } else {
         const data = await res.json();
-        setPinnedLocations((prevLocations) => [...prevLocations, data]);
+        setPinnedLocations((prevLocations: PinnedLocation[]) => [
+          ...prevLocations,
+          data,
+        ]);
       }
     } catch (error) {
       console.error(error);
@@ -45,17 +60,14 @@ export default function TripForm({
     <Container
       style={{ backgroundColor: "#f5f5f5", height: "100%", padding: "20px" }}
     >
-      <Paper
-        padding="md"
-        style={{ backgroundColor: "#fff", borderRadius: "8px" }}
-      >
+      <Paper style={{ backgroundColor: "#fff", borderRadius: "8px" }}>
         <form onSubmit={handleSubmit}>
           <PlaceSearch
             setPlace={setPlace}
             placeCoordinate={placeCoordinate}
             setPlaceCoordinate={setPlaceCoordinate}
           />
-          <Group position="center" style={{ marginTop: "20px" }}>
+          <Group style={{ marginTop: "20px" }}>
             <Button type="submit" color="blue" variant="filled">
               Add to my place
             </Button>

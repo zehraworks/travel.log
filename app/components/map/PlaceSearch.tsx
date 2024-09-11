@@ -4,15 +4,22 @@ import usePlacesAutocomplete, {
   getDetails,
   getGeocode,
   getLatLng,
+  Suggestion,
 } from "use-places-autocomplete";
-import { useState, useCallback } from "react";
+import { useState, useCallback, ChangeEvent } from "react";
 import { TextInput, Menu, MenuItem, Paper } from "@mantine/core";
+
+type PlaceSearchProps = {
+  placeCoordinate: { lat: number; lng: number } | null;
+  setPlaceCoordinate: (coordinates: { lat: number; lng: number }) => void;
+  setPlace: (place: any) => void;
+};
 
 export default function PlaceSearch({
   placeCoordinate,
   setPlaceCoordinate,
   setPlace,
-}) {
+}: PlaceSearchProps) {
   const [open, setOpen] = useState(false);
   const {
     ready,
@@ -24,13 +31,13 @@ export default function PlaceSearch({
     debounce: 300,
   });
 
-  const handleInput = (e) => {
+  const handleInput = (e: ChangeEvent<HTMLInputElement>) => {
     setValue(e.target.value);
     setOpen(true);
   };
 
   const handleSelect = useCallback(
-    ({ description, place_id }) =>
+    ({ description, place_id }: Suggestion) =>
       async () => {
         try {
           const details = await getDetails({ placeId: place_id });
@@ -39,26 +46,18 @@ export default function PlaceSearch({
           setValue(description, false);
           clearSuggestions();
           const results = await getGeocode({ address: description });
-          const coordinates = getLatLng(results[0]);
+          const coordinates = await getLatLng(results[0]);
           setPlaceCoordinate(coordinates);
         } catch (error) {
           console.log("Error: ", error);
         }
         setOpen(false);
       },
-    [
-      clearSuggestions,
-      getDetails,
-      getGeocode,
-      getLatLng,
-      setPlace,
-      setPlaceCoordinate,
-      setValue,
-    ]
+    [clearSuggestions, setPlace, setPlaceCoordinate, setValue]
   );
 
   const renderSuggestions = () =>
-    data.map((suggestion) => {
+    data.map((suggestion: Suggestion) => {
       const {
         place_id,
         structured_formatting: { main_text, secondary_text },
@@ -84,12 +83,11 @@ export default function PlaceSearch({
         variant="filled"
         disabled={!ready}
         onFocus={() => setOpen(true)}
-        onBlur={() => setTimeout(() => setOpen(false), 200)} // Delay to allow click events
+        onBlur={() => setTimeout(() => setOpen(false), 200)}
       />
       {open && status === "OK" && (
         <Paper style={{ position: "absolute", zIndex: 10, width: "100%" }}>
           <Menu
-            size="sm"
             opened={open}
             onClose={() => setOpen(false)}
             closeOnClickOutside

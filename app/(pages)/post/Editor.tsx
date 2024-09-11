@@ -1,23 +1,29 @@
 "use client";
-import React, { useRef, useEffect, useState } from "react";
-import EditorJS from "@editorjs/editorjs";
+
+import React, { useRef, useEffect, useState, FormEvent } from "react";
+import EditorJS, { ToolConstructable } from "@editorjs/editorjs";
 import Header from "@editorjs/header";
 import List from "@editorjs/list";
 import Embed from "@editorjs/embed";
 import Paragraph from "@editorjs/paragraph";
 
-/* import checklistUmd from "@editorjs/checklist";
-import tableUmd from "@editorjs/table";
-import markerUmd from "@editorjs/marker"; */
+// Define types for props
+interface EditorProps {
+  placeId: string;
+  posts: Array<{ id: string; title: string; content: any }>;
+  setValue: (data: {
+    posts: Array<{ id: string; title: string; content: any }>;
+  }) => void;
+}
 
-export default function Editor({ placeId, posts, setValue }) {
-  const ejInstance = useRef(null);
-  const [editorData, setEditorData] = useState(null);
+export default function Editor({ placeId, posts, setValue }: EditorProps) {
+  const ejInstance = useRef<EditorJS | null>(null);
+  const [editorData, setEditorData] = useState<any>(null);
 
   useEffect(() => {
     if (!ejInstance.current) {
       initEditor();
-      ejInstance.current = true;
+      ejInstance.current = new EditorJS();
     }
   }, []);
 
@@ -29,13 +35,15 @@ export default function Editor({ placeId, posts, setValue }) {
       },
       autofocus: true,
       onChange: async () => {
-        const content = await editor.save();
-        console.log("heyconn", content);
-        setEditorData(content);
+        if (ejInstance.current) {
+          const content = await ejInstance.current.save();
+          console.log("Editor content:", content);
+          setEditorData(content);
+        }
       },
       tools: {
         header: {
-          class: Header,
+          class: Header as unknown as ToolConstructable,
           config: {
             placeholder: "Enter a header",
             levels: [1, 2, 3, 4, 5],
@@ -43,37 +51,25 @@ export default function Editor({ placeId, posts, setValue }) {
           },
         },
         paragraph: {
-          class: Paragraph,
+          class: Paragraph as unknown as ToolConstructable,
         },
         list: {
-          class: List,
+          class: List as unknown as ToolConstructable,
           inlineToolbar: true,
           shortcut: "CMD+SHIFT+L",
           sanitize: {
-            tags: ["ul", "ol", "li"],
+            ul: {},
+            ol: {},
+            li: {},
           },
         },
-        embed: Embed,
-        /*       checklist: {
-          class: checklistUmd,
-          inlineToolbar: true,
-        },
-        table: {
-          class: tableUmd,
-          inlineToolbar: true,
-          shortcut: "CMD+ALT+T",
-        },
-        Marker: {
-          class: markerUmd,
-          shortcut: "CMD+SHIFT+M",
-        }, */
-        /*    image: ImageTool, */
+        embed: Embed as unknown as ToolConstructable,
       },
     });
     ejInstance.current = editor;
   };
 
-  const handleSavePost = async (e) => {
+  const handleSavePost = async (e: FormEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
     if (!placeId) {
@@ -117,14 +113,14 @@ export default function Editor({ placeId, posts, setValue }) {
     }
   };
 
-  const handleDeletePost = async (id) => {
+  const handleDeletePost = async (id: string) => {
     try {
       const response = await fetch(`/api/post/deletePost?id=${id}`, {
         method: "DELETE",
       });
 
       if (!response.ok) {
-        console.error("Failed to delete place");
+        console.error("Failed to delete post");
         return;
       }
     } catch (err) {
@@ -134,9 +130,12 @@ export default function Editor({ placeId, posts, setValue }) {
 
   return (
     <div>
-      <div id="editorjs"></div>;
+      <div id="editorjs"></div>
       <button onClick={(e) => handleSavePost(e)}>Save Post</button>
-      <button className="bg-red-600" onClick={() => handleDeletePost()}>
+      <button
+        className="bg-red-600"
+        onClick={() => handleDeletePost("some-id")}
+      >
         Delete Post
       </button>
     </div>

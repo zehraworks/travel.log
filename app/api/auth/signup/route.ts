@@ -1,11 +1,17 @@
 import { connectToDatabase } from "@/helpers/server";
 import prisma from "@/prisma";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcrypt";
 
-export const POST = async (req) => {
+interface RegisterRequest {
+  name: string;
+  email: string;
+  password: string;
+}
+
+export const POST = async (req: NextRequest) : Promise<NextResponse> => {
   try {
-    const { name, email, password } = await req.json();
+    const { name, email, password } : RegisterRequest = await req.json();
     if (!name || !email || !password)
       return NextResponse.json({ message: "Invalid data" }, { status: 422 });
 
