@@ -1,4 +1,6 @@
 import "./globals.css";
+import "@mantine/core/styles.css";
+
 import { Raleway } from "next/font/google";
 import { getServerSession } from "next-auth";
 import SessionProvider from "./components/SessionProvider";
