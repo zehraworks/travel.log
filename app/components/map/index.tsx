@@ -3,6 +3,7 @@ import React from "react";
 import TripForm from "./TripForm";
 import Map from "./Map";
 import { useState } from "react";
+import { Box, Stack } from "@mantine/core";
 
 type PlaceCoordinate = {
   latitude: number;
@@ -26,23 +27,15 @@ export default function MapComponent() {
   const [pinnedLocations, setPinnedLocations] = useState<PinnedLocation[]>([]);
 
   return (
-    <div className="flex">
-      <div className="w-1/5">
+    <Stack>
+      <Box miw={800}>
         <TripForm
           placeCoordinate={placeCoordinate}
           setPlaceCoordinate={setPlaceCoordinate}
           pinnedLocations={pinnedLocations}
           setPinnedLocations={setPinnedLocations}
         />
-      </div>
-      <div className="w-4/5">
-        <Map
-          placeCoordinate={placeCoordinate}
-          setPlaceCoordinate={setPlaceCoordinate}
-          pinnedLocations={pinnedLocations}
-          setPinnedLocations={setPinnedLocations}
-        />
-      </div>
-    </div>
+      </Box>
+    </Stack>
   );
 }

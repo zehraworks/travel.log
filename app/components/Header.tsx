@@ -91,7 +91,15 @@ function AuthButton() {
         <Menu.Dropdown>
           <Menu.Label>My Account</Menu.Label>
           <Divider />
-          <Menu.Item color="gray">heyyo</Menu.Item>
+          <Menu.Item color="gray">
+            <Anchor
+              component={Link}
+              underline="never"
+              href={`/profile/${user?.name}`}
+            >
+              Profile
+            </Anchor>
+          </Menu.Item>
           <Menu.Item onClick={() => signOut()} color="gray">
             Logout
           </Menu.Item>
@@ -103,7 +111,7 @@ function AuthButton() {
   return <Button onClick={handleRedirect}>Sign In</Button>;
 }
 
-export default function NavMenu() {
+export default function Header() {
   const pathname = usePathname();
 
   return (

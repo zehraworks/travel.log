@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { Button, Container, Paper, Group } from "@mantine/core";
+import { Button, Container, Paper, Group, Avatar, Flex } from "@mantine/core";
 import PlaceSearch from "./PlaceSearch";
+import Map from "./Map";
 
 type PinnedLocation = {
   id: string;
@@ -61,23 +62,25 @@ export default function TripForm({
   };
 
   return (
-    <Container
-      style={{ backgroundColor: "#f5f5f5", height: "100%", padding: "20px" }}
-    >
-      <Paper style={{ backgroundColor: "#fff", borderRadius: "8px" }}>
-        <form onSubmit={handleSubmit}>
-          <PlaceSearch
-            setPlace={setPlace}
+    <Flex className="bg-[#fbf2ec] p-5 w-full rounded-lg">
+      <form onSubmit={handleSubmit} className="w-full">
+        <PlaceSearch
+          setPlace={setPlace}
+          placeCoordinate={placeCoordinate}
+          setPlaceCoordinate={setPlaceCoordinate}
+        />
+        <Group style={{ marginTop: "20px" }}>
+          <Button type="submit" color="blue" variant="filled">
+            Add to my place
+          </Button>
+          <Map
             placeCoordinate={placeCoordinate}
             setPlaceCoordinate={setPlaceCoordinate}
+            pinnedLocations={pinnedLocations}
+            setPinnedLocations={setPinnedLocations}
           />
-          <Group style={{ marginTop: "20px" }}>
-            <Button type="submit" color="blue" variant="filled">
-              Add to my place
-            </Button>
-          </Group>
-        </form>
-      </Paper>
-    </Container>
+        </Group>
+      </form>
+    </Flex>
   );
 }

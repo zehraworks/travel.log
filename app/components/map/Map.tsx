@@ -85,7 +85,8 @@ export default function Map({
 
   const containerStyle = {
     width: "100%",
-    height: "80vh",
+    height: "30vh",
+    borderRadius: "10px",
   };
 
   const centerCoordinate = {

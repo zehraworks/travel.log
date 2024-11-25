@@ -7,7 +7,7 @@ import usePlacesAutocomplete, {
   Suggestion,
 } from "use-places-autocomplete";
 import { useState, useCallback, ChangeEvent } from "react";
-import { TextInput, Menu, MenuItem, Paper } from "@mantine/core";
+import { TextInput, Menu, MenuItem, Paper, Avatar } from "@mantine/core";
 
 type PlaceSearchProps = {
   placeCoordinate: { lat: number; lng: number } | null;
@@ -75,16 +75,33 @@ export default function PlaceSearch({
     });
 
   return (
-    <div>
-      <TextInput
-        value={value}
-        onChange={handleInput}
-        placeholder="to where?"
-        variant="filled"
-        disabled={!ready}
-        onFocus={() => setOpen(true)}
-        onBlur={() => setTimeout(() => setOpen(false), 200)}
-      />
+    <>
+      <Paper
+        style={{
+          display: "flex",
+          width: "100%",
+          backgroundColor: "pink",
+          borderRadius: "50px 10px 10px 50px",
+        }}
+      >
+        <Avatar h={60} w={65} />
+        <TextInput
+          variant="unstyled"
+          style={{
+            height: "60px",
+            display: "flex",
+            alignItems: "center",
+            paddingLeft: "10px",
+            width: "100%",
+          }}
+          value={value}
+          onChange={handleInput}
+          placeholder="to where?"
+          disabled={!ready}
+          onFocus={() => setOpen(true)}
+          onBlur={() => setTimeout(() => setOpen(false), 200)}
+        />
+      </Paper>
       {open && status === "OK" && (
         <Paper style={{ position: "absolute", zIndex: 10, width: "100%" }}>
           <Menu
@@ -97,6 +114,6 @@ export default function PlaceSearch({
           </Menu>
         </Paper>
       )}
-    </div>
+    </>
   );
 }

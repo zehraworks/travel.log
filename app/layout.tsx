@@ -4,10 +4,11 @@ import "@mantine/core/styles.css";
 import { Raleway } from "next/font/google";
 import { getServerSession } from "next-auth";
 import SessionProvider from "./components/SessionProvider";
-import NavMenu from "./components/NavMenu";
+import Header from "./components/Header";
 import { GlobalProvider } from "@/context/postContext";
 import { MantineProvider } from "@mantine/core";
 import { ReactNode } from "react";
+import { Container } from "@mantine/core";
 
 const raleway = Raleway({ subsets: ["latin"] });
 
@@ -34,8 +35,10 @@ export default async function RootLayout(props: RootLayoutProps) {
         <MantineProvider defaultColorScheme="auto" withGlobalClasses>
           <GlobalProvider>
             <SessionProvider session={session}>
-              <NavMenu />
-              {props.children}
+              <Container size="lg">
+                <Header />
+                {props.children}
+              </Container>
             </SessionProvider>
           </GlobalProvider>
         </MantineProvider>
