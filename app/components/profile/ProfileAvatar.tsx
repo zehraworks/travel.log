@@ -22,8 +22,8 @@ export default function ProfileAvatar() {
         <Text size="sm">📍 Location</Text>
       </Stack>
       <Flex gap="sm">
-        <FaEnvelope size={25} />
-        <FaBell size={25} />
+        <FaBell size={25} color="#285F98" />
+        <FaEnvelope size={25} color="#285F98" />
       </Flex>
     </Flex>
   );

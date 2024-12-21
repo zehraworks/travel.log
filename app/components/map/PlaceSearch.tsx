@@ -80,7 +80,6 @@ export default function PlaceSearch({
         style={{
           display: "flex",
           width: "100%",
-          backgroundColor: "pink",
           borderRadius: "50px 10px 10px 50px",
         }}
       >

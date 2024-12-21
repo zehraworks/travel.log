@@ -62,7 +62,7 @@ export default function TripForm({
   };
 
   return (
-    <Flex className="bg-[#fbf2ec] p-5 w-full rounded-lg">
+    <Flex className="bg-[#FCF1EB] p-5 w-full rounded-lg">
       <form onSubmit={handleSubmit} className="w-full">
         <PlaceSearch
           setPlace={setPlace}
@@ -70,7 +70,7 @@ export default function TripForm({
           setPlaceCoordinate={setPlaceCoordinate}
         />
         <Group style={{ marginTop: "20px" }}>
-          <Button type="submit" color="blue" variant="filled">
+          <Button type="submit" color="#285F98" variant="filled">
             Add to my place
           </Button>
           <Map

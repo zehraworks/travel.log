@@ -3,7 +3,7 @@ import React from "react";
 
 export default function UserMeta() {
   return (
-    <Stack c="cyan" bg="grape" gap={30} w={250}>
+    <Stack gap={30} w={250}>
       <Stack>
         <Text size="lg" tt="uppercase">
           Badges

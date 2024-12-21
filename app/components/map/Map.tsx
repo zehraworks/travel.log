@@ -165,7 +165,7 @@ export default function Map({
           onMouseOver={() => handleMarkerMouseEnter(place.id)}
           onMouseOut={handleMarkerMouseLeave}
           icon={{
-            url: "/dot.svg",
+            url: "/map-pin.svg",
             anchor: new google.maps.Point(15, 15),
             scaledSize: new window.google.maps.Size(30, 30),
           }}

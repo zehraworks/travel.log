@@ -1,7 +1,6 @@
 "use client";
 import React from "react";
 import TripForm from "./TripForm";
-import Map from "./Map";
 import { useState } from "react";
 import { Box, Stack } from "@mantine/core";
 
@@ -9,7 +8,7 @@ type PlaceCoordinate = {
   latitude: number;
   longitude: number;
 };
-
+ 
 type PinnedLocation = {
   id: string;
   name: string;
