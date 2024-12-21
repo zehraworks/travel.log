@@ -62,6 +62,8 @@ const UserButton = forwardRef<HTMLButtonElement, UserButtonProps>(
   )
 );
 
+UserButton.displayName = "UserButton";
+
 function AuthButton() {
   const { data: session } = useSession();
   const router = useRouter();
