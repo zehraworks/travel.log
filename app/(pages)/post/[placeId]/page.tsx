@@ -27,7 +27,7 @@ export default function Post({ params }: { params: Params }) {
       }
     }
     fetchData();
-  }, [placeId]);
+  }, [placeId, setValue]);
 
   const handleDeletePost = async (id: string) => {
     try {
