@@ -31,7 +31,7 @@ export default async function RootLayout(props: RootLayoutProps) {
           defer
         ></script>
       </head>
-      <body className={raleway.className}>
+      <body className={`${raleway.className} bg-[#fff] dark:bg-[#2B2A2A]`}>
         <MantineProvider defaultColorScheme="auto" withGlobalClasses>
           <GlobalProvider>
             <SessionProvider session={session}>
