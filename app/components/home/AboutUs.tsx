@@ -22,7 +22,7 @@ export default function AboutUs() {
           ABOUT US
         </Title>
         <Box className=" h-[calc(16rem+12px)] flex justify-between">
-          <Box className="flex justify-center relative bg-[#1E1E1E] h-1/2 w-[calc(50%-25px)] rounded-b-sm">
+          <Box className="flex justify-center relative bg-[#285F98] dark:bg-[#1E1E1E] h-1/2 w-[calc(50%-25px)] rounded-b-sm">
             <Box className="absolute top-3 h-64 w-[calc(100%-24px)]">
               <Image
                 src="https://images.unsplash.com/photo-1455849318743-b2233052fcff?q=80&w=2938&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
@@ -33,7 +33,7 @@ export default function AboutUs() {
             </Box>
           </Box>
           <Box className="h-full w-[calc(50%-25px)] flex items-end">
-            <Box className="bg-[#1E1E1E] w-full p-4">
+            <Box className="bg-[#EDF3F8] dark:bg-[#1E1E1E] w-full p-4 rounded-b-sm">
               <Text>
                 Catherine unwilling elf bertie eeylops cottage candles them
                 teacup. Wand aurors servant wronski plums motorcycle hollow
