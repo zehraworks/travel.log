@@ -9,6 +9,7 @@ import { GlobalProvider } from "@/context/postContext";
 import { MantineProvider } from "@mantine/core";
 import { ReactNode } from "react";
 import { Container } from "@mantine/core";
+import Footer from "./components/Footer";
 
 const raleway = Raleway({ subsets: ["latin"] });
 
@@ -39,6 +40,7 @@ export default async function RootLayout(props: RootLayoutProps) {
                 <Header />
                 {props.children}
               </Container>
+              <Footer />
             </SessionProvider>
           </GlobalProvider>
         </MantineProvider>
