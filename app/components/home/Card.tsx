@@ -15,7 +15,7 @@ export default function BlogCard() {
         />
       </Box>
 
-      <Box className="h-2/3 bg-[#1E1E1E] absolute bottom-0 left-0 right-0 px-4 pt-20 rounded-b-sm">
+      <Box className="h-2/3 bg-[#EDF3F8] dark:bg-[#1E1E1E] absolute bottom-0 left-0 right-0 px-4 pt-20 rounded-b-sm">
         <Group justify="space-between" mt="md" mb="xs">
           <Text fw={500}>Norway Fjord Adventures</Text>
         </Group>

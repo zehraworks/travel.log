@@ -7,7 +7,7 @@ export default function JoinOurNewsletter() {
     <Box className="w-full max-h-max flex justify-between  items-end mt-4">
       <Box className="flex flex-col justify-between w-[calc(50%-25px)] gap-y-5">
         <Title>Join Our Newsletter</Title>
-        <Box className="flex flex-col gap-y-5 w-full p-4 bg-[#1E1E1E]">
+        <Box className="flex flex-col gap-y-5 w-full p-4 bg-[#EDF3F8] dark:bg-[#1E1E1E] rounded-t-sm">
           <Text>
             Potter ipsum wand elf parchment wingardium. Trace side phials treats
             powder knight-bus woes.
@@ -24,7 +24,7 @@ export default function JoinOurNewsletter() {
         </Box>
       </Box>
       <Box className="h-[calc(16rem+12px)] w-[calc(50%-25px)] flex items-end">
-        <Box className="flex justify-center  relative bg-[#1E1E1E] h-1/2 w-full rounded-t-sm mt-auto">
+        <Box className="flex justify-center  relative bg-[#285F98] dark:bg-[#1E1E1E] h-1/2 w-full rounded-t-sm mt-auto">
           <Box className="absolute bottom-3 h-64 w-[calc(100%-24px)]  ">
             <Image
               src="https://images.unsplash.com/photo-1512236258305-32fb110fdb01?q=80&w=2948&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
