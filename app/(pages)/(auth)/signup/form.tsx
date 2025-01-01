@@ -150,7 +150,7 @@ export default function SignUpForm() {
 
       {error && <Alert color="red">{error}</Alert>}
 
-      <Button type="submit" variant="filled" color="blue">
+      <Button fullWidth type="submit" variant="filled" color="#DD6224">
         Submit
       </Button>
     </form>
