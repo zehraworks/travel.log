@@ -29,16 +29,16 @@ model User {
 }
 
 model Account {
-  id                String  @id @default(auto()) @map("_id") @db.ObjectId
-  userId            String  @db.ObjectId
-  type              String
+  id                String       @id @default(auto()) @map("_id") @db.ObjectId
+  userId            String       @db.ObjectId
+  type              ProviderType
   provider          String
   providerAccountId String
-  refresh_token     String? @db.String
-  access_token      String? @db.String
+  refresh_token     String?      @db.String
+  access_token      String?      @db.String
   token_type        String?
   scope             String?
-  id_token          String? @db.String
+  id_token          String?      @db.String
   session_state     String?
 
   expires_at               Int?
@@ -107,4 +107,9 @@ enum Continent {
   ANTARCTICA
   EUROPE
   AUSTRALIA
+}
+
+enum ProviderType {
+  oauth
+  credentials
 }

@@ -45,31 +45,25 @@ export default function SignUpForm() {
     },
   });
 
-  const checkUniqueName = async (name: string): Promise<boolean> => {
-    setNameError(null);
-
-    try {
-      const response = await fetch(`/api/auth/uniqueName?name=${name}`);
-      const data = await response.json();
-
-      if (!data.isUnique) {
-        setNameError("Name must be unique");
-        return false;
-      }
-      return true;
-    } catch (error) {
-      setNameError("Server error");
-      return false;
-    }
-  };
-
   const onSubmit = async (values: FormValues) => {
     setError(null);
 
-    const isUnique = await checkUniqueName(values.name);
-    if (!isUnique) return;
-
     try {
+      const emailResponse = await fetch("/api/auth/checkEmail", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email: values.email }),
+      });
+
+      const emailData = await emailResponse.json();
+
+      if (emailData.userExists) {
+        setError("This email is already associated with an existing account.");
+        return;
+      }
+
       const response = await fetch("/api/auth/signup", {
         method: "POST",
         headers: {
@@ -84,7 +78,7 @@ export default function SignUpForm() {
         throw new Error(data.message || "Something went wrong");
       }
 
-      router.push("/signin");
+      router.push("/signin"); // Redirect to signin page
     } catch (error) {
       setError((error as Error).message);
     }

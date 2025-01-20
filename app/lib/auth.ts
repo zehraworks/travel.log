@@ -3,7 +3,7 @@ import type { AuthOptions } from "next-auth"
 import GithubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { PrismaAdapter } from "@auth/prisma-adapter";
+import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import bcrypt from "bcrypt";
 import { PrismaClient } from "@prisma/client";
 
@@ -34,15 +34,19 @@ export const authOptions: AuthOptions = {
             },
             async authorize(credentials) {
                 if (!credentials?.email || !credentials?.password) {
-                    throw new Error("Invalid credentials!");
+                    throw new Error("Please provide both email and password.");
                 }
 
                 const user = await prisma.user.findUnique({
                     where: { email: credentials.email },
                 });
 
-                if (!user || !user?.hashedPassword) {
-                    throw new Error("Invalid credentials!");
+                if (!user) {
+                    throw new Error("No user found with this email.");
+                }
+
+                if (!user.hashedPassword) {
+                    throw new Error("This account does not have a password set.");
                 }
 
                 const isCorrectPassword = await bcrypt.compare(
@@ -51,15 +55,17 @@ export const authOptions: AuthOptions = {
                 );
 
                 if (!isCorrectPassword) {
-                    throw new Error("Invalid password");
+                    throw new Error("Invalid password.");
                 }
+
                 return {
                     id: user.id,
                     name: user.name,
                     email: user.email,
                     image: user.image,
                 };
-            },
+            }
+
         }),
     ],
     session: {
@@ -81,6 +87,53 @@ export const authOptions: AuthOptions = {
             };
             return session;
         },
+        async signIn({ user, account }) {
+            if (!user.email) {
+                throw new Error("Email is required");
+            }
+
+            // E-posta ile var olan kullanıcıyı bul
+            const existingUser = await prisma.user.findUnique({
+                where: { email: user.email as string },
+            });
+
+            if (existingUser) {
+
+                await prisma.account.upsert({
+                    where: {
+                        provider_providerAccountId: {
+                            provider: account?.provider as string,
+                            providerAccountId: account?.providerAccountId as string,
+                        },
+                    },
+                    update: { userId: existingUser.id },
+                    create: {
+                        provider: account?.provider as string,
+                        providerAccountId: account?.providerAccountId as string,
+                        type: account?.type || "oauth",
+                        userId: existingUser.id,
+                    },
+                });
+            } else {
+
+                await prisma.user.create({
+                    data: {
+                        email: user.email,
+                        name: user.name,
+                        accounts: {
+                            create: {
+                                provider: account?.provider as string,
+                                providerAccountId: account?.providerAccountId as string,
+                                type: account?.type || "credentials",
+                            },
+                        },
+                    },
+                });
+            }
+
+            return true;
+        }
+
     },
     secret: process.env.NEXTAUTH_SECRET as string,
     pages: {
