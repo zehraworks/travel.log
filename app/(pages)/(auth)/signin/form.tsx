@@ -1,11 +1,17 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { signIn } from "next-auth/react";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { Button, TextInput, PasswordInput, Stack } from "@mantine/core";
+import {
+  Button,
+  TextInput,
+  PasswordInput,
+  Stack,
+  Notification,
+} from "@mantine/core";
 
 const formSchema = z.object({
   email: z
@@ -21,6 +27,8 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>;
 
 export default function SignInForm() {
+  const [error, setError] = useState<string | null>(null);
+
   const {
     register,
     handleSubmit,
@@ -33,12 +41,19 @@ export default function SignInForm() {
     },
   });
 
-  const onSubmit: SubmitHandler<FormValues> = (values) => {
-    signIn("credentials", {
-      callbackUrl: "/",
-      email: values.email,
-      password: values.password,
-    });
+  const onSubmit: SubmitHandler<FormValues> = async (values) => {
+    setError(null);
+    try {
+      const result = await signIn("credentials", {
+        redirect: false,
+        email: values.email,
+        password: values.password,
+      });
+
+      window.location.href = "/";
+    } catch (err: any) {
+      setError(err.message);
+    }
   };
 
   return (
@@ -47,6 +62,11 @@ export default function SignInForm() {
       className="w-full text-primary-foreground"
     >
       <Stack gap="md">
+        {error && (
+          <Notification color="red" onClose={() => setError(null)}>
+            {error}
+          </Notification>
+        )}
         <TextInput
           label="Email address"
           placeholder="Email address"
@@ -59,7 +79,7 @@ export default function SignInForm() {
           {...register("password")}
           error={errors.password?.message}
         />
-        <Button type="submit" variant="filled">
+        <Button color="#DD6224" type="submit" variant="filled">
           Sign In
         </Button>
       </Stack>

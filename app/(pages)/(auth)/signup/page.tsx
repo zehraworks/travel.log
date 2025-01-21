@@ -4,7 +4,7 @@ import React from "react";
 import GoogleButton from "../GoogleButton";
 import GithubButton from "../GithubButton";
 import SignUpForm from "./form";
-import { Box, Text, Title } from "@mantine/core";
+import { Box, Notification, Text, Title } from "@mantine/core";
 import Image from "next/image";
 
 export default function Signup() {
@@ -22,7 +22,7 @@ export default function Signup() {
           </Box>
         </Box>
       </Box>
-      <Box className="flex flex-col items-center justify-center w-1/2 h-full">
+      <Box className=" flex flex-col items-center justify-center w-1/2 h-full px-8">
         <Title className="w-full font-bold text-3xl">Welcome to Travelog</Title>
         <Box className="w-full flex flex-col space-y-1">
           <Text className="font-extralight text-xs">
