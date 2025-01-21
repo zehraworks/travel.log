@@ -79,7 +79,7 @@ export default function SignInForm() {
           {...register("password")}
           error={errors.password?.message}
         />
-        <Button type="submit" variant="filled">
+        <Button color="#DD6224" type="submit" variant="filled">
           Sign In
         </Button>
       </Stack>
