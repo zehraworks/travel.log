@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   GoogleMap,
   MarkerF,
@@ -8,10 +8,11 @@ import {
 } from "@react-google-maps/api";
 import { useRouter } from "next/navigation";
 import { useGlobal } from "@/context/postContext";
+import { Box, Button, Text, Title } from "@mantine/core";
 
 type PlaceCoordinate = {
-  latitude: number;
-  longitude: number;
+  lat: number;
+  lng: number;
 };
 
 type PinnedLocation = {
@@ -42,6 +43,8 @@ export default function Map({
 }: MapProps) {
   const [activeMarker, setActiveMarker] = useState<string | null>(null);
   const [infoWindowVisible, setInfoWindowVisible] = useState(false);
+  const [hoveredPlaceCoordinate, setHoveredPlaceCoordinate] =
+    useState<PlaceCoordinate | null>(null);
 
   const { posts, setValue } = useGlobal();
   const router = useRouter();
@@ -60,12 +63,17 @@ export default function Map({
     fetchPinnedLocations();
   }, [setPinnedLocations]);
 
-  const handleMarkerMouseEnter = (id: string) => {
-    setActiveMarker(id);
+  const handleMarkerMouseEnter = (place: PinnedLocation) => {
+    setActiveMarker(place.id);
+    setHoveredPlaceCoordinate({
+      lat: place.latitude,
+      lng: place.longitude,
+    });
     setInfoWindowVisible(true);
   };
 
   const handleMarkerMouseLeave = () => {
+    setHoveredPlaceCoordinate(null);
     if (!infoWindowVisible) {
       setActiveMarker(null);
     }
@@ -87,11 +95,6 @@ export default function Map({
     width: "100%",
     height: "30vh",
     borderRadius: "10px",
-  };
-
-  const centerCoordinate = {
-    lat: 41.0085,
-    lng: 28.98,
   };
 
   const options = {
@@ -142,27 +145,45 @@ export default function Map({
     }
   };
 
+  const currentCenter = useMemo(() => {
+    let center;
+
+    if (hoveredPlaceCoordinate) {
+      center = {
+        lat: hoveredPlaceCoordinate.lat,
+        lng: hoveredPlaceCoordinate.lng,
+      };
+    } else if (placeCoordinate) {
+      center = {
+        lat: placeCoordinate.lat,
+        lng: placeCoordinate.lng,
+      };
+    } else {
+      center = { lat: 41.0085, lng: 28.98 };
+    }
+
+    return center;
+  }, [placeCoordinate, hoveredPlaceCoordinate]);
+
   return isLoaded ? (
     <GoogleMap
       mapContainerStyle={containerStyle}
-      center={
-        (placeCoordinate || centerCoordinate) as google.maps.LatLngLiteral
-      }
+      center={currentCenter}
       zoom={13}
       options={options}
     >
       {placeCoordinate && (
         <MarkerF
           position={{
-            lat: placeCoordinate.latitude,
-            lng: placeCoordinate.longitude,
+            lat: isFinite(placeCoordinate.lat) ? placeCoordinate.lng : 0, // default to 0 if invalid
+            lng: isFinite(placeCoordinate.lng) ? placeCoordinate.lng : 0, // default to 0 if invalid
           }}
         />
       )}
       {pinnedLocations.map((place) => (
         <MarkerF
           key={place.id}
-          onMouseOver={() => handleMarkerMouseEnter(place.id)}
+          onMouseOver={() => handleMarkerMouseEnter(place)}
           onMouseOut={handleMarkerMouseLeave}
           icon={{
             url: "/map-pin.svg",
@@ -176,30 +197,34 @@ export default function Map({
               onLoad={() => handleInfoWindowLoad(place.id)}
               position={{ lat: place.latitude, lng: place.longitude }}
             >
-              <div
+              <Box
                 className="flex flex-col space-y-3 bg-gray-500 h-32"
-                onMouseOver={handleInfoWindowMouseEnter}
-                onMouseOut={handleInfoWindowMouseLeave}
+                onMouseEnter={handleInfoWindowMouseEnter}
+                onMouseLeave={handleInfoWindowMouseLeave}
               >
                 {posts?.map((post) => (
-                  <p key={post.id} className="bg-green-300">
-                    {post.title}
-                  </p>
+                  <Title key={post.id}>{post.title}</Title>
                 ))}
-                <p>{place.name}</p>
-                <button
-                  className="bg-blue-700 w-full"
+                <Text>{place.name}</Text>
+                <Button
+                  color="blue"
+                  fullWidth
+                  mt="md"
+                  radius="md"
                   onClick={() => handleAddPost(place.id)}
                 >
                   Add blog post
-                </button>
-                <button
-                  className="bg-red-700 w-full"
+                </Button>
+                <Button
+                  color="blue"
+                  fullWidth
+                  mt="md"
+                  radius="md"
                   onClick={() => handleDelete(place.id)}
                 >
                   Delete place
-                </button>
-              </div>
+                </Button>
+              </Box>
             </InfoWindow>
           )}
         </MarkerF>
