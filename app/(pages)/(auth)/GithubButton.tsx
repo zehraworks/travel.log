@@ -8,12 +8,9 @@ import { BsGithub } from "react-icons/bs";
 export default function GithubButton() {
   const [error, setError] = useState<string | null>(null);
 
-  const handleGoogleSignIn = async () => {
+  const handleGithubSignIn = async () => {
     try {
       const result = await signIn("github", { callbackUrl: "/" });
-      if (!result?.ok) {
-        throw new Error(result?.error || "An unexpected error occurred.");
-      }
     } catch (err: any) {
       setError(err.message);
     }
@@ -43,7 +40,7 @@ export default function GithubButton() {
             },
           },
         }}
-        onClick={() => signIn("github", { callbackUrl: "/" })}
+        onClick={handleGithubSignIn}
       >
         <p>Continue with Github</p>
       </Button>

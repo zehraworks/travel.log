@@ -11,8 +11,9 @@ export default function GoogleButton() {
   const handleGoogleSignIn = async () => {
     try {
       const result = await signIn("google", { callbackUrl: "/" });
-      if (!result?.ok) {
-        throw new Error(result?.error || "An unexpected error occurred.");
+
+      if (result?.error) {
+        throw new Error(result.error);
       }
     } catch (err: any) {
       setError(err.message);

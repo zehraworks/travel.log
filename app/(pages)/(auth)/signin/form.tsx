@@ -42,21 +42,17 @@ export default function SignInForm() {
   });
 
   const onSubmit: SubmitHandler<FormValues> = async (values) => {
-    setError(null); 
+    setError(null);
     try {
       const result = await signIn("credentials", {
-        redirect: false, 
+        redirect: false,
         email: values.email,
         password: values.password,
       });
 
-      if (!result?.ok) {
-        throw new Error(result?.error || "An unexpected error occurred.");
-      }
-
       window.location.href = "/";
     } catch (err: any) {
-      setError(err.message || "An unexpected error occurred."); 
+      setError(err.message);
     }
   };
 
