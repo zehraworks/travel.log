@@ -3,7 +3,7 @@ import prisma from "@/prisma";
 import { NextRequest, NextResponse } from "next/server";
 
 export const POST = async (req: NextRequest): Promise<NextResponse> => {
-    const { email } = await req.json(); // Extract email from the request body
+    const { email } = await req.json();
 
     if (!email) {
         return new NextResponse(
@@ -13,7 +13,7 @@ export const POST = async (req: NextRequest): Promise<NextResponse> => {
     }
 
     try {
-        // Check if the email already exists in the database
+
         const user = await prisma.user.findUnique({
             where: { email },
         });

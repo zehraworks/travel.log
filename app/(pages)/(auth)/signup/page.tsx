@@ -4,7 +4,7 @@ import React from "react";
 import GoogleButton from "../GoogleButton";
 import GithubButton from "../GithubButton";
 import SignUpForm from "./form";
-import { Box, Text, Title } from "@mantine/core";
+import { Box, Notification, Text, Title } from "@mantine/core";
 import Image from "next/image";
 
 export default function Signup() {

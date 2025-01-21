@@ -6,8 +6,14 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import bcrypt from "bcrypt";
 import { PrismaClient } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 
 const prisma = new PrismaClient();
+
+type UserWithAccounts = Prisma.UserGetPayload<{
+    include: { accounts: true };
+}>;
+
 
 export const authOptions: AuthOptions = {
     adapter: PrismaAdapter(prisma) as any,
@@ -37,15 +43,26 @@ export const authOptions: AuthOptions = {
                     throw new Error("Please provide both email and password.");
                 }
 
-                const user = await prisma.user.findUnique({
-                    where: { email: credentials.email },
+                const user: UserWithAccounts | null = await prisma.user.findUnique({
+                    where: { email: credentials.email }, include: {
+                        accounts: true,
+                    },
                 });
 
                 if (!user) {
                     throw new Error("No user found with this email.");
                 }
 
+
                 if (!user.hashedPassword) {
+
+                    const registeredProvider = user?.accounts?.[0]?.provider;
+                    if (registeredProvider) {
+                        throw new Error(
+                            `This email is registered with another provider: ${registeredProvider}. Please use that provider to log in.`
+                        );
+                    }
+
                     throw new Error("This account does not have a password set.");
                 }
 
@@ -88,51 +105,38 @@ export const authOptions: AuthOptions = {
             return session;
         },
         async signIn({ user, account }) {
-            if (!user.email) {
-                throw new Error("Email is required");
+
+            const provider = account?.provider;
+            const email = user?.email;
+
+
+            if (!email) {
+                throw new Error("Email required to sign in.");
             }
 
-            // E-posta ile var olan kullanıcıyı bul
+
             const existingUser = await prisma.user.findUnique({
-                where: { email: user.email as string },
+                where: { email },
+                include: {
+                    accounts: true,
+                },
             });
 
             if (existingUser) {
 
-                await prisma.account.upsert({
-                    where: {
-                        provider_providerAccountId: {
-                            provider: account?.provider as string,
-                            providerAccountId: account?.providerAccountId as string,
-                        },
-                    },
-                    update: { userId: existingUser.id },
-                    create: {
-                        provider: account?.provider as string,
-                        providerAccountId: account?.providerAccountId as string,
-                        type: account?.type || "oauth",
-                        userId: existingUser.id,
-                    },
-                });
-            } else {
+                const existingProvider = existingUser.accounts.find(
+                    (acc) => acc.provider !== provider
+                );
 
-                await prisma.user.create({
-                    data: {
-                        email: user.email,
-                        name: user.name,
-                        accounts: {
-                            create: {
-                                provider: account?.provider as string,
-                                providerAccountId: account?.providerAccountId as string,
-                                type: account?.type || "credentials",
-                            },
-                        },
-                    },
-                });
+                if (existingProvider) {
+                    throw new Error(
+                        `This email has been registered with another login method: ${existingProvider.provider}. Please log in using that method.`
+                    );
+                }
             }
 
             return true;
-        }
+        },
 
     },
     secret: process.env.NEXTAUTH_SECRET as string,
