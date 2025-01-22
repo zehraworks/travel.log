@@ -8,7 +8,11 @@ import {
 } from "@react-google-maps/api";
 import { useRouter } from "next/navigation";
 import { useGlobal } from "@/context/postContext";
-import { Box, Button, Text, Title } from "@mantine/core";
+import { ActionIcon, Box, Button, Text, Title, Tooltip } from "@mantine/core";
+import { FaNoteSticky, FaTrashCan } from "react-icons/fa6";
+import PinCard from "./PinCard";
+
+import { useMediaQuery } from "@mantine/hooks";
 
 type PlaceCoordinate = {
   lat: number;
@@ -45,6 +49,18 @@ export default function Map({
   const [infoWindowVisible, setInfoWindowVisible] = useState(false);
   const [hoveredPlaceCoordinate, setHoveredPlaceCoordinate] =
     useState<PlaceCoordinate | null>(null);
+
+  const [mapStyleId, setMapStyleId] = useState<string | null>(null);
+  const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
+  console.log("prefersDark", mapStyleId);
+
+  useEffect(() => {
+    if (prefersDarkMode) {
+      setMapStyleId(process.env.NEXT_PUBLIC_DARK_STYLE_ID as string);
+    } else {
+      setMapStyleId(process.env.NEXT_PUBLIC_LIGHT_STYLE_ID as string);
+    }
+  }, [prefersDarkMode]);
 
   const { posts, setValue } = useGlobal();
   const router = useRouter();
@@ -101,6 +117,7 @@ export default function Map({
     mapId: process.env.NEXT_PUBLIC_MAP_ID as string,
     mapTypeControl: false,
     streetViewControl: false,
+    styleId: mapStyleId,
   };
 
   const { isLoaded } = useJsApiLoader({
@@ -175,8 +192,8 @@ export default function Map({
       {placeCoordinate && (
         <MarkerF
           position={{
-            lat: isFinite(placeCoordinate.lat) ? placeCoordinate.lng : 0, // default to 0 if invalid
-            lng: isFinite(placeCoordinate.lng) ? placeCoordinate.lng : 0, // default to 0 if invalid
+            lat: isFinite(placeCoordinate.lat) ? placeCoordinate.lng : 0,
+            lng: isFinite(placeCoordinate.lng) ? placeCoordinate.lng : 0,
           }}
         />
       )}
@@ -194,37 +211,31 @@ export default function Map({
         >
           {activeMarker === place.id && (
             <InfoWindow
+              options={{ maxWidth: 300 }}
               onLoad={() => handleInfoWindowLoad(place.id)}
               position={{ lat: place.latitude, lng: place.longitude }}
             >
-              <Box
-                className="flex flex-col space-y-3 bg-gray-500 h-32"
-                onMouseEnter={handleInfoWindowMouseEnter}
-                onMouseLeave={handleInfoWindowMouseLeave}
-              >
-                {posts?.map((post) => (
-                  <Title key={post.id}>{post.title}</Title>
-                ))}
-                <Text>{place.name}</Text>
-                <Button
-                  color="blue"
-                  fullWidth
-                  mt="md"
-                  radius="md"
-                  onClick={() => handleAddPost(place.id)}
+              <>
+                <PinCard
+                  posts={posts}
+                  place={place}
+                  handleInfoWindowMouseEnter={handleInfoWindowMouseEnter}
+                  handleInfoWindowMouseLeave={handleInfoWindowMouseLeave}
+                  handleAddPost={handleAddPost}
+                  handleDelete={handleDelete}
+                />
+                {/* <Box
+                  className="flex flex-col space-y-3 bg-gray-500 h-auto w-36"
+                  onMouseEnter={handleInfoWindowMouseEnter}
+                  onMouseLeave={handleInfoWindowMouseLeave}
                 >
-                  Add blog post
-                </Button>
-                <Button
-                  color="blue"
-                  fullWidth
-                  mt="md"
-                  radius="md"
-                  onClick={() => handleDelete(place.id)}
-                >
-                  Delete place
-                </Button>
-              </Box>
+                  {posts?.map((post) => (
+                    <Title key={post.id}>{post.title}</Title>
+                  ))}
+                  <Text>{place.name}</Text>
+                
+                </Box> */}
+              </>
             </InfoWindow>
           )}
         </MarkerF>
