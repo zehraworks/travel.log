@@ -96,7 +96,13 @@ function AuthButton() {
           >
             Profile
           </Menu.Item>
-          <Menu.Item onClick={() => signOut()} color="gray">
+          <Menu.Item
+            onClick={() => {
+              signOut();
+              handleRedirectSignin();
+            }}
+            color="gray"
+          >
             Logout
           </Menu.Item>
         </Menu.Dropdown>
