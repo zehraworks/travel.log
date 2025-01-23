@@ -35,18 +35,18 @@ export default function PlaceCard({ post }: PostProp) {
       : "No content available.";
 
   return (
-    <Stack className="rounded-md bg-[#F6F8FA] dark:bg-[#3B3B3B] px-4 py-4 max-w-[600px]">
+    <Stack className="rounded-md bg-[#F6F8FA] dark:bg-[#3B3B3B] px-6 py-8 max-w-[600px]">
       <Flex className="group" gap="md" h={132}>
         <Box w={100} h="100%" pos="relative">
           <Box
             bg="#285F98"
-            className="h-[50%] w-full transition-all duration-150 group-hover:h-full ease-in-out"
+            className="h-[50%] w-full transition-all duration-150 group-hover:h-full ease-in-out absolute bottom-0"
           />
           <Box
             className="p-3 absolute h-[calc(100%-16px)] w-[calc(100%-16px)] left-[8px] bottom-[8px] bg-no-repeat bg-cover bg-center
               group-hover:h-[calc(100%-32px)] group-hover:w-[calc(100%-32px)] group-hover:left-[16px] group-hover:bottom-[16px] ease-in-out transition-all duration-150"
             style={{
-              backgroundImage: `url("https://source.unsplash.com/random/200x200?sig=${post.id}")`,
+              backgroundImage: `url("https://images.unsplash.com/photo-1682588111806-cb4da7106742?q=80&w=2787&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D")`,
             }}
           />
         </Box>
