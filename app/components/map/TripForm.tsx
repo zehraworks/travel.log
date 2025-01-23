@@ -62,7 +62,7 @@ export default function TripForm({
   };
 
   return (
-    <Flex className="bg-[#FCF1EB] p-5 w-full rounded-lg">
+    <Flex className="bg-[#FCF1EB] dark:bg-[#1E1E1E] p-5 w-full rounded-lg">
       <form onSubmit={handleSubmit} className="w-full">
         <PlaceSearch
           setPlace={setPlace}

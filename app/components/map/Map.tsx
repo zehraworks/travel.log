@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   GoogleMap,
   MarkerF,
@@ -8,10 +8,15 @@ import {
 } from "@react-google-maps/api";
 import { useRouter } from "next/navigation";
 import { useGlobal } from "@/context/postContext";
+import { ActionIcon, Box, Button, Text, Title, Tooltip } from "@mantine/core";
+import { FaNoteSticky, FaTrashCan } from "react-icons/fa6";
+import PinCard from "./PinCard";
+
+import { useMediaQuery } from "@mantine/hooks";
 
 type PlaceCoordinate = {
-  latitude: number;
-  longitude: number;
+  lat: number;
+  lng: number;
 };
 
 type PinnedLocation = {
@@ -42,6 +47,20 @@ export default function Map({
 }: MapProps) {
   const [activeMarker, setActiveMarker] = useState<string | null>(null);
   const [infoWindowVisible, setInfoWindowVisible] = useState(false);
+  const [hoveredPlaceCoordinate, setHoveredPlaceCoordinate] =
+    useState<PlaceCoordinate | null>(null);
+
+  const [mapStyleId, setMapStyleId] = useState<string | null>(null);
+  const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
+  console.log("prefersDark", mapStyleId);
+
+  useEffect(() => {
+    if (prefersDarkMode) {
+      setMapStyleId(process.env.NEXT_PUBLIC_DARK_STYLE_ID as string);
+    } else {
+      setMapStyleId(process.env.NEXT_PUBLIC_LIGHT_STYLE_ID as string);
+    }
+  }, [prefersDarkMode]);
 
   const { posts, setValue } = useGlobal();
   const router = useRouter();
@@ -60,12 +79,17 @@ export default function Map({
     fetchPinnedLocations();
   }, [setPinnedLocations]);
 
-  const handleMarkerMouseEnter = (id: string) => {
-    setActiveMarker(id);
+  const handleMarkerMouseEnter = (place: PinnedLocation) => {
+    setActiveMarker(place.id);
+    setHoveredPlaceCoordinate({
+      lat: place.latitude,
+      lng: place.longitude,
+    });
     setInfoWindowVisible(true);
   };
 
   const handleMarkerMouseLeave = () => {
+    setHoveredPlaceCoordinate(null);
     if (!infoWindowVisible) {
       setActiveMarker(null);
     }
@@ -89,15 +113,11 @@ export default function Map({
     borderRadius: "10px",
   };
 
-  const centerCoordinate = {
-    lat: 41.0085,
-    lng: 28.98,
-  };
-
   const options = {
     mapId: process.env.NEXT_PUBLIC_MAP_ID as string,
     mapTypeControl: false,
     streetViewControl: false,
+    styleId: mapStyleId,
   };
 
   const { isLoaded } = useJsApiLoader({
@@ -142,27 +162,45 @@ export default function Map({
     }
   };
 
+  const currentCenter = useMemo(() => {
+    let center;
+
+    if (hoveredPlaceCoordinate) {
+      center = {
+        lat: hoveredPlaceCoordinate.lat,
+        lng: hoveredPlaceCoordinate.lng,
+      };
+    } else if (placeCoordinate) {
+      center = {
+        lat: placeCoordinate.lat,
+        lng: placeCoordinate.lng,
+      };
+    } else {
+      center = { lat: 41.0085, lng: 28.98 };
+    }
+
+    return center;
+  }, [placeCoordinate, hoveredPlaceCoordinate]);
+
   return isLoaded ? (
     <GoogleMap
       mapContainerStyle={containerStyle}
-      center={
-        (placeCoordinate || centerCoordinate) as google.maps.LatLngLiteral
-      }
+      center={currentCenter}
       zoom={13}
       options={options}
     >
       {placeCoordinate && (
         <MarkerF
           position={{
-            lat: placeCoordinate.latitude,
-            lng: placeCoordinate.longitude,
+            lat: isFinite(placeCoordinate.lat) ? placeCoordinate.lng : 0,
+            lng: isFinite(placeCoordinate.lng) ? placeCoordinate.lng : 0,
           }}
         />
       )}
       {pinnedLocations.map((place) => (
         <MarkerF
           key={place.id}
-          onMouseOver={() => handleMarkerMouseEnter(place.id)}
+          onMouseOver={() => handleMarkerMouseEnter(place)}
           onMouseOut={handleMarkerMouseLeave}
           icon={{
             url: "/map-pin.svg",
@@ -173,33 +211,31 @@ export default function Map({
         >
           {activeMarker === place.id && (
             <InfoWindow
+              options={{ maxWidth: 300 }}
               onLoad={() => handleInfoWindowLoad(place.id)}
               position={{ lat: place.latitude, lng: place.longitude }}
             >
-              <div
-                className="flex flex-col space-y-3 bg-gray-500 h-32"
-                onMouseOver={handleInfoWindowMouseEnter}
-                onMouseOut={handleInfoWindowMouseLeave}
-              >
-                {posts?.map((post) => (
-                  <p key={post.id} className="bg-green-300">
-                    {post.title}
-                  </p>
-                ))}
-                <p>{place.name}</p>
-                <button
-                  className="bg-blue-700 w-full"
-                  onClick={() => handleAddPost(place.id)}
+              <>
+                <PinCard
+                  posts={posts}
+                  place={place}
+                  handleInfoWindowMouseEnter={handleInfoWindowMouseEnter}
+                  handleInfoWindowMouseLeave={handleInfoWindowMouseLeave}
+                  handleAddPost={handleAddPost}
+                  handleDelete={handleDelete}
+                />
+                {/* <Box
+                  className="flex flex-col space-y-3 bg-gray-500 h-auto w-36"
+                  onMouseEnter={handleInfoWindowMouseEnter}
+                  onMouseLeave={handleInfoWindowMouseLeave}
                 >
-                  Add blog post
-                </button>
-                <button
-                  className="bg-red-700 w-full"
-                  onClick={() => handleDelete(place.id)}
-                >
-                  Delete place
-                </button>
-              </div>
+                  {posts?.map((post) => (
+                    <Title key={post.id}>{post.title}</Title>
+                  ))}
+                  <Text>{place.name}</Text>
+                
+                </Box> */}
+              </>
             </InfoWindow>
           )}
         </MarkerF>

@@ -89,16 +89,20 @@ function AuthButton() {
         <Menu.Dropdown>
           <Menu.Label>My Account</Menu.Label>
           <Divider />
-          <Menu.Item color="gray">
-            <Anchor
-              component={Link}
-              underline="never"
-              href={`/profile/${user?.name}`}
-            >
-              Profile
-            </Anchor>
+          <Menu.Item
+            color="gray"
+            component={Link}
+            href={`/profile/${user?.name}`}
+          >
+            Profile
           </Menu.Item>
-          <Menu.Item onClick={() => signOut()} color="gray">
+          <Menu.Item
+            onClick={() => {
+              signOut();
+              handleRedirectSignin();
+            }}
+            color="gray"
+          >
             Logout
           </Menu.Item>
         </Menu.Dropdown>
