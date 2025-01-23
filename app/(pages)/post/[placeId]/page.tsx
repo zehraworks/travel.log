@@ -27,7 +27,7 @@ export default function Post({ params }: { params: Params }) {
       }
     }
     fetchData();
-  }, [placeId, setValue]);
+  }, [placeId]);
 
   const handleDeletePost = async (id: string) => {
     try {
@@ -64,8 +64,8 @@ export default function Post({ params }: { params: Params }) {
           <p>No post</p>
         )}
       </div>
-       <h1>Post Editor</h1>
-      <Editor placeId={placeId} posts={posts} setValue={setValue} /> 
+      <h1>Post Editor</h1>
+      <Editor placeId={placeId} posts={posts} setValue={setValue} />
     </div>
   );
 }
