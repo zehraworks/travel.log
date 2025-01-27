@@ -67,3 +67,36 @@ h2 {
     background-color: red;
   }
 }
+
+.gm-style-iw {
+  background-color: white !important;
+  max-height: 400px !important;
+  overflow: auto !important;
+}
+
+.gm-style-iw-d {
+  background-color: white !important;
+  overflow: auto !important;
+}
+
+.gm-style-iw-chr {
+  width: 100% !important;
+  height: 24px !important;
+  padding-right: 0 !important;
+  padding-top: 4px !important;
+}
+
+.gm-ui-hover-effect {
+  height: 24px !important;
+  width: 20px !important;
+}
+
+.gm-ui-hover-effect > span {
+  width: 16px !important;
+  height: 16px !important;
+  margin: 0px !important;
+}
+
+.gm-style .gm-style-iw-c {
+  padding: 0px !important;
+}
