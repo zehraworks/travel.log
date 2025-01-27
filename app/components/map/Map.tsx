@@ -224,17 +224,6 @@ export default function Map({
                   handleAddPost={handleAddPost}
                   handleDelete={handleDelete}
                 />
-                {/* <Box
-                  className="flex flex-col space-y-3 bg-gray-500 h-auto w-36"
-                  onMouseEnter={handleInfoWindowMouseEnter}
-                  onMouseLeave={handleInfoWindowMouseLeave}
-                >
-                  {posts?.map((post) => (
-                    <Title key={post.id}>{post.title}</Title>
-                  ))}
-                  <Text>{place.name}</Text>
-                
-                </Box> */}
               </>
             </InfoWindow>
           )}
