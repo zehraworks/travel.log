@@ -2,6 +2,7 @@ import {
   ActionIcon,
   Box,
   Card,
+  Divider,
   Group,
   Image,
   SimpleGrid,
@@ -10,12 +11,6 @@ import {
   Tooltip,
 } from "@mantine/core";
 import { FaNoteSticky, FaTrashCan } from "react-icons/fa6";
-
-const images = [
-  "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-1.png",
-  "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-2.png",
-  "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-3.png",
-];
 
 type Post = {
   id: string;
@@ -54,54 +49,45 @@ export default function PinCard({
   handleDelete,
 }: PinCardProps) {
   return (
-    <Card
-      withBorder
-      shadow="sm"
-      radius="md"
+    <Box
+      className="flex flex-col h-40 bg-white gap-y-2 px-4 pb-3 "
       onMouseEnter={handleInfoWindowMouseEnter}
       onMouseLeave={handleInfoWindowMouseLeave}
     >
-      <Card.Section withBorder inheritPadding py="xs">
-        <Group justify="space-between">
-          <Text fw={500}>Review pictures</Text>
-        </Group>
-      </Card.Section>
-      {posts?.map((post) => <Title key={post.id}>{post.title}</Title>)}
+      <Title className=" text-gray-900 !text-base underline underline-offset-3 ">
+        {place.name}
+      </Title>
 
-      <Text>{place.name}</Text>
+      {posts?.map((post) => (
+        <Text className="!text-gray-700 !text-xs" key={post.id}>
+          {post.title}
+        </Text>
+      ))}
 
-      <Card.Section inheritPadding mt="sm" pb="md">
-        <SimpleGrid cols={3}>
-          {images.map((image) => (
-            <Image src={image} key={image} radius="sm" />
-          ))}
-        </SimpleGrid>
-      </Card.Section>
-
-      <Box>
+      <Box className="flex justify-start gap-x-1">
         <Tooltip label="Add Post">
           <ActionIcon
-            size="md"
+            size="26px"
             variant="filled"
             color="blue"
             radius="xl"
             onClick={() => handleAddPost(place.id)}
           >
-            <FaNoteSticky size={13} />
+            <FaNoteSticky size={12} />
           </ActionIcon>
         </Tooltip>
         <Tooltip label="Delete Place">
           <ActionIcon
-            size="md"
+            size="26px"
             variant="filled"
             color="red"
             radius="xl"
             onClick={() => handleDelete(place.id)}
           >
-            <FaTrashCan size={12} />
+            <FaTrashCan size={11} />
           </ActionIcon>
         </Tooltip>
       </Box>
-    </Card>
+    </Box>
   );
 }
