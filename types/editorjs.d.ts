@@ -1,0 +1,6 @@
+declare module '@editorjs/checklist';
+declare module '@editorjs/marker';
+declare module '@editorjs/list';
+declare module '@editorjs/embed';
+declare module 'editorjs-text-color-plugin';
+declare module 'editorjs-text-alignment-blocktune';
