@@ -1,13 +1,8 @@
 "use client";
 
-import React, { useRef, useEffect, useState, FormEvent } from "react";
-import EditorJS, { ToolConstructable } from "@editorjs/editorjs";
-import Header from "@editorjs/header";
-import List from "@editorjs/list";
-import Embed from "@editorjs/embed";
-import Paragraph from "@editorjs/paragraph";
+import React, { useEffect, useContext, FormEvent } from "react";
+import { EditorContext } from "./EditorContext";
 
-// Define types for props
 interface EditorProps {
   placeId: string;
   posts: Array<{ id: string; title: string; content: any }>;
@@ -17,67 +12,41 @@ interface EditorProps {
 }
 
 export default function Editor({ placeId, posts, setValue }: EditorProps) {
-  const ejInstance = useRef<EditorJS | null>(null);
-  const [editorData, setEditorData] = useState<any>(null);
+  const { initEditor, editorInstanceRef } = useContext(EditorContext);
 
   useEffect(() => {
-    if (!ejInstance.current) {
+    if (!editorInstanceRef.current) {
       initEditor();
-      ejInstance.current = new EditorJS();
     }
-  }, []);
 
-  const initEditor = () => {
-    const editor = new EditorJS({
-      holder: "editorjs",
-      onReady: () => {
-        ejInstance.current = editor;
-      },
-      autofocus: true,
-      onChange: async () => {
-        if (ejInstance.current) {
-          const content = await ejInstance.current.save();
-          console.log("Editor content:", content);
-          setEditorData(content);
+    return () => {
+      try {
+        if (editorInstanceRef.current) {
+          editorInstanceRef.current.destroy();
         }
-      },
-      tools: {
-        header: {
-          class: Header as unknown as ToolConstructable,
-          config: {
-            placeholder: "Enter a header",
-            levels: [1, 2, 3, 4, 5],
-            defaultLevel: 2,
-          },
-        },
-        paragraph: {
-          class: Paragraph as unknown as ToolConstructable,
-        },
-        list: {
-          class: List as unknown as ToolConstructable,
-          inlineToolbar: true,
-          shortcut: "CMD+SHIFT+L",
-          sanitize: {
-            ul: {},
-            ol: {},
-            li: {},
-          },
-        },
-        embed: Embed as unknown as ToolConstructable,
-      },
-    });
-    ejInstance.current = editor;
-  };
+      } catch (err) {
+        console.error("Editor destroy error:", err);
+      }
+      editorInstanceRef.current = null;
+    };
+  }, []);
 
   const handleSavePost = async (e: FormEvent<HTMLButtonElement>) => {
     e.preventDefault();
+
+    if (!editorInstanceRef.current) {
+      console.error("Editor is not initialized");
+      return;
+    }
+
+    const data = await editorInstanceRef.current.save();
 
     if (!placeId) {
       console.error("Place ID is not available");
       return;
     }
 
-    if (!editorData) {
+    if (!data) {
       console.error("Editor data is not available");
       return;
     }
@@ -89,8 +58,8 @@ export default function Editor({ placeId, posts, setValue }: EditorProps) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          title: "My New Post 22",
-          content: editorData,
+          title: "Yeni Post",
+          content: data,
           pinnedLocationId: placeId,
         }),
       });
@@ -101,11 +70,10 @@ export default function Editor({ placeId, posts, setValue }: EditorProps) {
         const newPost = await res.json();
         setValue({ posts: [...posts, newPost] });
 
-        if (ejInstance.current) {
-          ejInstance.current.clear();
+        if (editorInstanceRef.current) {
+          editorInstanceRef.current.blocks.clear();
         }
 
-        setEditorData(null);
         console.log("Post saved successfully");
       }
     } catch (error) {
@@ -119,19 +87,21 @@ export default function Editor({ placeId, posts, setValue }: EditorProps) {
         method: "DELETE",
       });
 
+      setValue({ posts: posts.filter((post) => post.id !== id) });
+
       if (!response.ok) {
         console.error("Failed to delete post");
         return;
       }
     } catch (err) {
-      console.log("Error deleting the post", err);
+      console.error("Error deleting the post", err);
     }
   };
 
   return (
     <div>
       <div id="editorjs"></div>
-      <button onClick={(e) => handleSavePost(e)}>Save Post</button>
+      <button onClick={handleSavePost}>Save Post</button>
       <button
         className="bg-red-600"
         onClick={() => handleDeletePost("some-id")}

@@ -10,6 +10,7 @@ import { MantineProvider } from "@mantine/core";
 import { ReactNode } from "react";
 import { Container } from "@mantine/core";
 import Footer from "./components/Footer";
+import EditorContextProvider from "./(pages)/post/EditorContext";
 
 const raleway = Raleway({ subsets: ["latin"] });
 
@@ -32,16 +33,20 @@ export default async function RootLayout(props: RootLayoutProps) {
           defer
         ></script>
       </head>
-      <body className={`${raleway.className} bg-[#fff] dark:bg-[#2B2A2A] h-auto`}>
+      <body
+        className={`${raleway.className} bg-[#fff] dark:bg-[#2B2A2A] h-auto`}
+      >
         <MantineProvider defaultColorScheme="auto" withGlobalClasses>
           <GlobalProvider>
-            <SessionProvider session={session}>
-              <Container size="lg">
-                <Header />
-                {props.children}
-              </Container>
-              <Footer />
-            </SessionProvider>
+            <EditorContextProvider>
+              <SessionProvider session={session}>
+                <Container size="lg">
+                  <Header />
+                  {props.children}
+                </Container>
+                <Footer />
+              </SessionProvider>
+            </EditorContextProvider>
           </GlobalProvider>
         </MantineProvider>
       </body>

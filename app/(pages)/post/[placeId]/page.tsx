@@ -48,8 +48,8 @@ export default function Post({ params }: { params: Params }) {
     }
   };
   return (
-    <div className="bg-slate-300 w-full flex flex-col">
-      <div className="bg-blue-400 h-56 flex flex-row space-x-3">
+    <div className="w-full flex flex-col">
+      <div className="h-56 flex flex-row space-x-3">
         {Array.isArray(posts) && posts.length > 0 ? (
           posts?.map((post) => (
             <div
@@ -64,7 +64,7 @@ export default function Post({ params }: { params: Params }) {
           <p>No post</p>
         )}
       </div>
-      <h1>Post Editor</h1>
+      <h1 className="text-black">Post Editor</h1>
       <Editor placeId={placeId} posts={posts} setValue={setValue} />
     </div>
   );
