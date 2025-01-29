@@ -9,6 +9,8 @@ import List from "@editorjs/list";
 import Embed from "@editorjs/embed";
 import Checklist from "@editorjs/checklist";
 import Marker from "@editorjs/marker";
+import ColorPlugin from "editorjs-text-color-plugin";
+import AlignmentBlockTune from "editorjs-text-alignment-blocktune";
 
 export const EditorContext = createContext<any>(null);
 
@@ -33,6 +35,15 @@ function EditorContextProvider({ children }: { children: React.ReactNode }) {
         editorInstanceRef.current = editor;
       },
       tools: {
+        // textAlignment: {
+        //   class: AlignmentBlockTune as unknown as ToolConstructable,
+        //   config: {
+        //     default: "left",
+        //     blocks: {
+        //       header: "center",
+        //     },
+        //   },
+        // },
         paragraph: {
           class: Paragraph as unknown as ToolConstructable,
         },
@@ -52,7 +63,10 @@ function EditorContextProvider({ children }: { children: React.ReactNode }) {
           },
         },
         checklist: {
-          class: Checklist,
+          class: Checklist as unknown as ToolConstructable,
+          config: {
+            placeholder: "Add a checklist item",
+          },
         },
         embed: {
           class: Embed as unknown as ToolConstructable,
@@ -66,6 +80,27 @@ function EditorContextProvider({ children }: { children: React.ReactNode }) {
         Marker: {
           class: Marker,
         },
+        Color: {
+          class: ColorPlugin as unknown as ToolConstructable,
+          config: {
+            colorCollections: [
+              "#EC7878",
+              "#9C27B0",
+              "#673AB7",
+              "#3F51B5",
+              "#0070FF",
+              "#03A9F4",
+              "#00BCD4",
+              "#4CAF50",
+              "#8BC34A",
+              "#CDDC39",
+              "#FFF",
+            ],
+            type: "text",
+            defaultColor: "#FF1300",
+            customPicker: true,
+          },
+        },
       },
     });
 
@@ -73,9 +108,14 @@ function EditorContextProvider({ children }: { children: React.ReactNode }) {
   };
 
   useEffect(() => {
+    if (!editorInstanceRef.current) {
+      initEditor();
+    }
+
     return () => {
       if (
-        editorInstanceRef.current
+        editorInstanceRef.current &&
+        typeof editorInstanceRef.current.destroy === "function"
       ) {
         editorInstanceRef.current.destroy();
       }

@@ -21,7 +21,10 @@ export default function Editor({ placeId, posts, setValue }: EditorProps) {
 
     return () => {
       try {
-        if (editorInstanceRef.current) {
+        if (
+          editorInstanceRef.current &&
+          typeof editorInstanceRef.current.destroy === "function"
+        ) {
           editorInstanceRef.current.destroy();
         }
       } catch (err) {
@@ -29,12 +32,15 @@ export default function Editor({ placeId, posts, setValue }: EditorProps) {
       }
       editorInstanceRef.current = null;
     };
-  }, []);
-
+  }, [editorInstanceRef.current]); 
+  
   const handleSavePost = async (e: FormEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
-    if (!editorInstanceRef.current) {
+    if (
+      !editorInstanceRef.current ||
+      typeof editorInstanceRef.current.save !== "function"
+    ) {
       console.error("Editor is not initialized");
       return;
     }
