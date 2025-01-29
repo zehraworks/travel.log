@@ -34,6 +34,8 @@
     "@react-google-maps/api": "^2.19.3",
     "bcrypt": "^5.1.1",
     "class-variance-authority": "^0.7.0",
+    "editorjs-text-alignment-blocktune": "^1.0.3",
+    "editorjs-text-color-plugin": "^2.0.4",
     "eslint": "^8.50.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-prettier": "^5.0.0",
